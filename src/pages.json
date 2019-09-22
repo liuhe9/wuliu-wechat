@@ -1,0 +1,77 @@
+{
+    "pages": [
+        {
+            "path": "pages/index/index",
+            "style": {
+                "navigationBarTitleText": "首页"
+            }
+        },
+        {
+            "path": "pages/binding/index",
+            "style": {
+                "navigationBarTitleText": "绑定微信"
+            }
+        },
+        {
+            "path": "pages/manager/index",
+            "style": {
+                "navigationBarTitleText": "我是管理员"
+            }
+        },
+        {
+            "path": "pages/consigner/index",
+            "style": {
+                "navigationBarTitleText": "我是客户"
+            }
+        },
+        {
+            "path": "pages/driver/index",
+            "style": {
+                "navigationBarTitleText": "我是司机"
+            }
+        },
+        {
+            "path": "pages/manager/manager/index",
+            "style": {
+                "navigationBarTitleText": "管理员列表"
+            }
+        },
+        {
+            "path": "pages/manager/driver/index",
+            "style": {
+                "navigationBarTitleText": "司机列表"
+            }
+        },
+        {
+            "path": "pages/manager/consigner/index",
+            "style": {
+                "navigationBarTitleText": "客户列表"
+            }
+        },
+        {
+            "path": "pages/manager/company/index",
+            "style": {
+                "navigationBarTitleText": "公司信息"
+            }
+        },
+        {
+            "path": "pages/manager/logistics/index",
+            "style": {
+                "navigationBarTitleText": "物流列表"
+            }
+        },
+        {
+            "path": "pages/manager/logistics_statistics/index",
+            "style": {
+                "navigationBarTitleText": "物流统计"
+            }
+        }
+
+    ],
+    "globalStyle": {
+        "navigationBarTextStyle": "black",
+        "navigationBarTitleText": "uni-app",
+        "navigationBarBackgroundColor": "#F8F8F8",
+        "backgroundColor": "#F8F8F8"
+    }
+}
