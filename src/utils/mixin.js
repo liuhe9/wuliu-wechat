@@ -1,8 +1,5 @@
 export default {
     methods: {
-        handleReset (name) {
-            this.$refs[name].resetFields()
-        },
         redirect_to(url) {
             uni.redirectTo({ url: url })
         },

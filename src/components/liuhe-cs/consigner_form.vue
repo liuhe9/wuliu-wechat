@@ -13,6 +13,7 @@
                             <view class="cu-form-group margin-top">
                                 <view class="title">发货单号</view>
                                 <input class="solid" placeholder="发货单号" v-model="form.tracking_no"></input>
+                                <text class='cuIcon-scan text-orange' @tap="scanQrcode" data-id="tracking_no"></text>
                             </view>
                             <view class="cu-form-group">
                                 <view class="title">货品描述</view>
@@ -175,6 +176,9 @@
                         self.showToast('未选择地点')
                     }
                 })
+            },
+            scanQrcode() {
+                console.log(this.scanCode());
             }
 		}
 	}
