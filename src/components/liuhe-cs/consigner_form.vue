@@ -12,17 +12,17 @@
                         <form>
                             <view class="cu-form-group margin-top">
                                 <view class="title">发货单号</view>
-                                <input class="solid" placeholder="发货单号" v-model="form.tracking_no"></input>
+                                <input placeholder="发货单号" v-model="form.tracking_no"></input>
                                 <text class='cuIcon-scan text-orange' @tap="scanQrcode" data-id="tracking_no"></text>
                             </view>
-                            <view class="cu-form-group">
+                            <view class="cu-form-group uni-textarea">
                                 <view class="title">货品描述</view>
-                                <textarea class="solid" maxlength="-1" v-model="form.product_desc">
+                                <textarea placeholder="货品描述" maxlength="-1" v-model="form.product_desc">
                                 </textarea>
                             </view>
-                            <view class="cu-form-group">
+                            <view class="cu-form-group uni-textarea">
                                 <view class="title">备注</view>
-                                <textarea class="solid" maxlength="-1" v-model="form.note">
+                                <textarea placeholder="备注" maxlength="-1" v-model="form.note">
                                 </textarea>
                             </view>
                             <view class="cu-bar bg-white">
@@ -46,11 +46,11 @@
                             </view>
                             <view class="cu-form-group margin-top bg-gray">
                                 <view class="title">收货人</view>
-                                <input class="solid" placeholder="收货人" v-model="form.receiver_name"></input>
+                                <input placeholder="收货人" v-model="form.receiver_name"></input>
                             </view>
                             <view class="cu-form-group bg-gray">
                                 <view class="title">收货人手机</view>
-                                <input class="solid" placeholder="收货人手机" v-model="form.receiver_mobile"></input>
+                                <input placeholder="收货人手机" v-model="form.receiver_mobile"></input>
                             </view>
                             <view class="cu-form-group bg-gray">
                                 <view class="title">收货地址坐标</view>
@@ -59,7 +59,7 @@
                             </view>
                             <view class="cu-form-group bg-gray">
                                 <view class="title">收货地址</view>
-                                <textarea class="solid" maxlength="-1" v-model="form.to_address"></textarea>
+                                <textarea maxlength="-1" v-model="form.to_address"></textarea>
                             </view>
                             
                             <view class="cu-form-group">
@@ -69,7 +69,7 @@
                             </view>
                             <view class="cu-form-group">
                                 <view class="title">发货地址</view>
-                                <textarea class="solid" maxlength="-1" v-model="form.from_address"></textarea>
+                                <textarea maxlength="-1" v-model="form.from_address"></textarea>
                             </view>
                             
                             <view class="padding flex flex-direction">

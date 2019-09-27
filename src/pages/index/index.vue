@@ -21,11 +21,10 @@
 				title: 'Hello'
 			}
 		},
-		onLoad() {
-
-		},
 		methods: {
-
+            init() {
+            	console.log('init')
+            },
 		}
 	}
 </script>

@@ -1,5 +1,50 @@
+import api from '@/utils/api'
+
 export default {
+    onLoad() {
+        console.log('onload')
+        this.preInit()
+    },
     methods: {
+        async preInit() {
+            console.log('preInit')
+            let self = this
+            let openid = false
+            this.checkSession(async function(res) {
+                console.log('checksession:res',res)
+                if (res.errMsg == 'login:ok') {
+                    openid = await api.get('wechat/user/session', {code:res.code}).then((res1) => {
+                        console.log('res1',res1)
+                        return res1.data.openid
+                    })
+                    uni.setStorageSync('openid', openid)
+                } else {
+                    openid = self.my_global.openid
+                }
+                console.log('g_openid',openid)
+                self.init()
+            })
+        },
+        checkSession(callback) {
+            let self = this
+            uni.checkSession({
+                success (res) {
+                    callback(res)
+                },
+                fail () {
+                    uni.setStorageSync('openid', false)
+                    self.login(callback)
+                }
+            })
+        },
+        login(callback) {
+            uni.login({
+              provider: 'weixin',
+              success: function (res) {
+                  callback(res)
+              }
+            })
+        },
         redirect_to(url) {
             uni.redirectTo({ url: url })
         },

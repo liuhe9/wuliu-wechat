@@ -38,10 +38,10 @@
 				tab_cur: 'month',
 			}
 		},
-		onLoad() {
-
-		},
 		methods: {
+            init() {
+            	console.log('init')
+            },
 			tabSelect(e) {
 				this.tab_cur = e.currentTarget.dataset.id;
 			}

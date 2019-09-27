@@ -1,7 +1,7 @@
 <script>
 	export default {
 		globalData: {
-			__base_url__: (process.env.NODE_ENV === 'development') ? 'http://localhost:8084' : 'https://shnh.s666666.cn'
+            
 		},
 		onLaunch: function() {
 			console.log('App Launch')

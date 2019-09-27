@@ -22,15 +22,17 @@
                 list_meta: {},
 			}
 		},
-		onLoad() {
-			this.getList()
-		},
 		methods: {
+            init() {
+            	console.log('init')
+                this.getList()
+            },
 			async getList() {
-				let list = await api.list('consigners');
-				this.list = list.data.data;
-				this.list_links = list.data.links;
-                this.list_meta = list.data.meta;
+				let list = await api.list('consigners').then((res) => {return res.data});
+				console.log(list)
+				this.list = list.data;
+				this.list_links = list.links;
+				this.list_meta = list.meta;
 			}
 		}
 	}

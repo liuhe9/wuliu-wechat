@@ -34,14 +34,17 @@
 				list_from: 'manager'
 			}
 		},
-		onLoad() {
-			this.getList()
-		},
 		methods: {
+            init() {
+            	console.log('init')
+                this.getList()
+            },
 			async getList() {
-				let list = await api.list('logisticses');
-				this.list = list.data.data;
-				this.list_links = list.data.links;
+				let list = await api.list('logisticses').then((res) => {return res.data});
+				console.log(list)
+				this.list = list.data;
+				this.list_links = list.links;
+				this.list_meta = list.meta;
 			},
 			tabSelect(e) {
 				this.tab_cur = e.currentTarget.dataset.id;

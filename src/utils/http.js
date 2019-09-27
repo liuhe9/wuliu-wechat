@@ -1,9 +1,10 @@
 import Request from './request'
+import my_global from '@/utils/my_global'
 
 const http = new Request()
 
 http.setConfig((config) => { /* 设置全局配置 */
-  config.baseUrl = getApp().globalData.__base_url__ /* 根域名不同 */
+  config.baseUrl = my_global.__BASE_URL__ /* 根域名不同 */
   config.header = {
     a: 1,
     b: 2

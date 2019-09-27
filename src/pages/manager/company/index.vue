@@ -34,10 +34,10 @@
                 }
 			}
 		},
-		onLoad() {
-
-		},
 		methods: {
+            init() {
+            	console.log('init')
+            },
 			ChooseImage() {
 				uni.chooseImage({
 					count: 9, //默认9
