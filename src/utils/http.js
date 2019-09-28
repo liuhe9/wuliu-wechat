@@ -6,16 +6,18 @@ const http = new Request()
 http.setConfig((config) => { /* 设置全局配置 */
   config.baseUrl = my_global.__BASE_URL__ /* 根域名不同 */
   config.header = {
-    a: 1,
-    b: 2
+      
   }
+  if (uni.getStorageSync('api_token') != undefined && uni.getStorageSync('api_token') != false) {
+      config.header.Authorization = 'Bearer ' + uni.getStorageSync('api_token')
+  }
+  console.log('api_token',uni.getStorageSync('api_token'))
   return config
 })
 
 http.interceptor.request((config, cancel) => { /* 请求之前拦截器 */
   config.header = {
     ...config.header,
-    b: 1
   }
   /*
   if (!token) { // 如果token不存在，调用cancel 会取消本次请求，但是该函数的catch() 仍会执行

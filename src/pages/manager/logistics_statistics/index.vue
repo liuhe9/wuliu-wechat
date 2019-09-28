@@ -1,5 +1,6 @@
 <template>
 	<view>
+        <view v-if="page_show">
 		<scroll-view scroll-x class="bg-white nav text-center">
 			<view class="cu-item" :class="item.key==tab_cur?'text-blue cur':''" v-for="(item,index) in tab_data" :key="index" @tap="tabSelect" :data-id="item.key">
 				{{item.label}}
@@ -15,12 +16,18 @@
 				</view>
 			</view>
 		</view>
+		</view>
+		<Binding :user_type="auth_type" :modal_show="modal_show" @modalHide="modalHide" @init="init"></Binding>
 		<Bar active_bar="1"></Bar>
 	</view>
 </template>
 
 <script>
+	import Binding from "@/components/liuhe-cs/binding.vue"
 	export default {
+	    components:{
+	        Binding,
+        },
 		data() {
 			return {
 				list_data:[
@@ -36,11 +43,21 @@
 					{'label' : '按日', 'key':'day'},
 				],
 				tab_cur: 'month',
+                page_show: false,
+                modal_show: false,
+                auth_type: 'manager',
 			}
 		},
 		methods: {
-            init() {
-            	console.log('init')
+            async init() {
+                console.log('init')
+                let auth_res = await this.checkApiAuth()
+                this.page_show = auth_res
+                if (auth_res == false) {
+                    this.modal_show = 'show'
+                } else {
+                    this.getList()
+                }
             },
 			tabSelect(e) {
 				this.tab_cur = e.currentTarget.dataset.id;

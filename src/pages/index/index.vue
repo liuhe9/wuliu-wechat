@@ -1,5 +1,6 @@
 <template>
 	<view class="page show">
+        <view v-if="page_show">
 		<view class="cu-card case" :class="isCard?'no-card':''">
 			<view class="cu-item shadow">
 				<view class="image">
@@ -10,15 +11,22 @@
 				</view>
 			</view>
 		</view>
+		</view>
 		<Bar></Bar>
 	</view>
 </template>
 
 <script>
+	import Binding from "@/components/liuhe-cs/binding.vue"
 	export default {
+	    components:{
+	        Binding
+        },
 		data() {
 			return {
-				title: 'Hello'
+				title: 'Hello',
+                page_show: false,
+                modal_show: false,
 			}
 		},
 		methods: {

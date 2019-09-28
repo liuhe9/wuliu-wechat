@@ -161,9 +161,6 @@
             },
 		},
         methods:{
-            modalHide() {
-            	this.modal_show = false
-            },
             /**
              * @param {string|array} gps(string:经度,纬度；array:数组)
              * 

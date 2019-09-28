@@ -19,7 +19,7 @@ export default {
                     })
                     uni.setStorageSync('openid', openid)
                 } else {
-                    openid = self.my_global.openid
+                    openid = uni.getStorageSync('openid')
                 }
                 console.log('g_openid',openid)
                 self.init()
@@ -44,6 +44,19 @@ export default {
                   callback(res)
               }
             })
+        },
+        async checkApiAuth(type = '') {
+            let auth_type = type || this.auth_type
+            console.log('auth_type',auth_type)
+            console.log('my_global',uni.getStorageSync('api_token'))
+            if (uni.getStorageSync('api_token') == undefined || uni.getStorageSync('api_token') == false) {
+                console.log('openid', uni.getStorageSync('openid'))
+                let res = await api.get('wechat/check', {openid:uni.getStorageSync('openid'), auth_type: auth_type})
+                return res.data.exists ? true : false;
+            } else {
+                return true;
+            }
+            
         },
         redirect_to(url) {
             uni.redirectTo({ url: url })
@@ -131,5 +144,22 @@ export default {
                 }
             })
         },
+        
+        modalHide(){
+            this.modal_show = false
+        },
+        async unbinding(id) {
+            console.log(id)
+            let res = await api.post('wechat/unbinding', {id:id.id, user_type:id.user_type}).then((res1) => {
+                console.log('res1',res1)
+                return res1.data
+            })
+            if (res.status == true) {
+                this.getList()
+            } else {
+                this.getList()
+            }
+            
+        }
     }
 }

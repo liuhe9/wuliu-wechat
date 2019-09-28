@@ -1,21 +1,26 @@
 <template>
 	<view class="page show">
+        <view v-if="page_show">
 		<scroll-view scroll-x class="bg-white nav text-center">
 			<view class="cu-item" :class="item.key==tab_cur?'text-blue cur':''" v-for="(item,index) in tab_data" :key="index" @tap="tabSelect" :data-id="item.key">
 				{{item.label}}
 			</view>
 		</scroll-view>
-		<Logistics_list :list_from="list_from" :list_data="list" :list_links="list_links" :list_title="list_title" :list_type="list_type"></Logistics_list>
+		<LogisticsList :list_from="list_from" :list_data="list" :list_links="list_links" :list_title="list_title" :list_type="list_type"></LogisticsList>
+        </view>
+        <Binding :user_type="auth_type" :modal_show="modal_show" @modalHide="modalHide" @init="init"></Binding>
 		<Bar active_bar="2"></Bar>
 	</view>
 </template>
 
 <script>
-	import Logistics_list from '@/components/liuhe-cs/logistics_list.vue'
+	import LogisticsList from '@/components/liuhe-cs/logistics-list.vue'
 	import api from '@/utils/api'
+	import Binding from "@/components/liuhe-cs/binding.vue"
 	export default {
-		components:{
-			Logistics_list
+	    components:{
+	        Binding,
+			LogisticsList
 		},
 		data() {
 			return {
@@ -31,13 +36,22 @@
 				list_title: '物流列表',
 				list_type: 'logistics',
 				list_links: {},
-				list_from: 'manager'
+				list_from: 'manager',
+                page_show: false,
+                modal_show: false,
+                auth_type: 'consigner',
 			}
 		},
 		methods: {
-            init() {
-            	console.log('init')
-                this.getList()
+            async init() {
+                console.log('init')
+                let auth_res = await this.checkApiAuth()
+                this.page_show = auth_res
+                if (auth_res == false) {
+                    this.modal_show = 'show'
+                } else {
+                    this.getList()
+                }
             },
 			async getList() {
 				let list = await api.list('logisticses').then((res) => {return res.data});

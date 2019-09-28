@@ -75,7 +75,7 @@
 
 <script>
     
-    import AddEdit from '@/components/liuhe-cs/add_edit'
+    import AddEdit from '@/components/liuhe-cs/add-edit'
 	export default {
         components:{
             AddEdit
@@ -134,9 +134,6 @@
                 this.$emit('getList')
                 this.modal_show = false
             },
-            modalHide() {
-            	this.modal_show = false
-            },
             getKeys() {
                 let keys = {
                     manager: ['name', 'mobile', 'password'],
@@ -146,7 +143,7 @@
                 return keys[this.list_type]
             },
             unbinding(id) {
-                
+                this.$emit('unbinding', {id:id,user_type:this.list_type})
             }
         }
 	}

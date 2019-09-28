@@ -1,5 +1,6 @@
 <template>
 	<view class="content">
+        <view v-if="page_show">
 		<form>
 			<view class="image">
 				<image src="https://ossweb-img.qq.com/images/lol/web201310/skin/big10006.jpg" mode="widthFix"></image>
@@ -21,22 +22,38 @@
 				</view>
 			</view>
 		</form>
+        </view>
+        <Binding :user_type="auth_type" :modal_show="modal_show" @modalHide="modalHide" @init="init"></Binding>
 		<Bar active_bar="1"></Bar>
 	</view>
 </template>
 
 <script>
+	import Binding from "@/components/liuhe-cs/binding.vue"
 	export default {
+	    components:{
+	        Binding
+        },
 		data() {
 			return {
 				form: {
                     imgList: [],
-                }
+                },
+                page_show: false,
+                modal_show: false,
+                auth_type: 'manager',
 			}
 		},
 		methods: {
-            init() {
-            	console.log('init')
+            async init() {
+                console.log('init')
+                let auth_res = await this.checkApiAuth()
+                this.page_show = auth_res
+                if (auth_res == false) {
+                    this.modal_show = 'show'
+                } else {
+                    this.getList()
+                }
             },
 			ChooseImage() {
 				uni.chooseImage({

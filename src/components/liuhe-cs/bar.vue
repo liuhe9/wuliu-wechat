@@ -18,16 +18,16 @@
                 <view class="cuIcon-location"> </view> 我是司机
             </view>
         </view>
-		<consigner_form :modal_show="modal_show" @modalHide="modalHide"></consigner_form>
+		<ConsignerForm :modal_show="modal_show" @modalHide="modalHide"></ConsignerForm>
 	</view>
 </template>
 
 <script>
-	import consigner_form from '@/components/liuhe-cs/consigner_form'
+	import ConsignerForm from '@/components/liuhe-cs/consigner-form'
 
 	export default {
 		components:{
-			consigner_form
+			ConsignerForm
 		},
 		data() {
 			return {
@@ -44,9 +44,7 @@
         },
 
 		methods:{
-			modalHide(){
-				this.modal_show = false
-			},
+			
 
 		},
 	}
