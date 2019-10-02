@@ -92,8 +92,8 @@
                         </view>
                         <view class="flex solid-bottom justify-between">
                             <view class="padding-xs margin-xs">
-                                <button class="cu-btn block bg-blue">
-                                    <text class="cuIcon-write"></text> 编辑
+                                <button class="cu-btn block bg-red" @tap="chooseDrivers">
+                                    <text class="cuIcon-check"></text> 分配司机
                                 </button>
                             </view>
                             <view class="padding-xs margin-xs">
@@ -102,7 +102,7 @@
                                 </button>
                             </view>
                             <view class="padding-xs margin-xs">
-                                <button class="cu-btn block bg-yellow text-white">
+                                <button class="cu-btn block bg-white">
                                     <text class="cuIcon-location"></text> 查看定位
                                 </button>
                             </view>
@@ -220,6 +220,10 @@
             		urls: urls,
             		current: urls[0]
             	});
+            },
+            
+            chooseDrivers() {
+                console.log(11)
             },
         }
 	}

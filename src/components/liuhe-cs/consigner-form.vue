@@ -1,89 +1,77 @@
 <template>
 	<view v-if="modal_show">
-         <view class="cu-modal" :class="[modal_show ?'show':'']" style="position: fixed;">
+         <view class="cu-modal" :class="[modal_show ?'show':'']">
 			<view class="cu-dialog">
 				<view class="cu-bar bg-white justify-end">
                     <view class="content">填写发货单</view>
-                        <view class="action" @tap="modalHide">
-                            <text class="cuIcon-close text-red"></text>
+                    <view class="action" @tap="modalHide">
+                        <text class="cuIcon-close text-red"></text>
+                    </view>
+                </view>
+                <view class="padding-sm">
+                    <form>
+                        <view class="cu-form-group margin-top">
+                            <input placeholder="发货单号" v-model="form.tracking_no"></input>
+                            <text class='cuIcon-scan text-orange' @tap="scanQrcode" data-id="tracking_no"></text>
                         </view>
-                    </view>
-                    <view class="padding-sm">
-                        <form>
-                            <view class="cu-form-group margin-top">
-                                <view class="title">发货单号</view>
-                                <input placeholder="发货单号" v-model="form.tracking_no"></input>
-                                <text class='cuIcon-scan text-orange' @tap="scanQrcode" data-id="tracking_no"></text>
+                        
+                        <view class="cu-form-group margin-top bg-gray">
+                            <input placeholder="收货人" v-model="form.receiver_name"></input>
+                        </view>
+                        <view class="cu-form-group bg-gray">
+                            <input placeholder="收货人手机" v-model="form.receiver_mobile"></input>
+                        </view>
+                        <view class="cu-form-group bg-gray">
+                            <input type="text" placeholder="选择收货地址坐标" @tap="getGps" data-id="to_gps" disabled="true" v-model="form.to_gps"></input>
+                            <text class='cuIcon-locationfill text-orange' @tap="getGps" data-id="to_gps"></text>
+                        </view>
+                        <view class="cu-form-group bg-gray">
+                            <input placeholder="收货地址" v-model="form.to_address"></input>
+                        </view>
+                        
+                        <view class="cu-form-group">
+                            <input type="text" placeholder="选择发货地址坐标" @tap="getGps" data-id="from_gps" disabled="true" v-model="form.from_gps"></input>
+                            <text class='cuIcon-locationfill text-orange' @tap="getGps" data-id="from_gps"></text>
+                        </view>
+                        <view class="cu-form-group">
+                            <input placeholder="发货地址" v-model="form.from_address"></input>
+                        </view>
+                        
+                        <view class="cu-form-group">
+                            <input placeholder="货品描述" v-model="form.product_desc"></input>
+                        </view>
+                        <view class="cu-form-group ">
+                            <input placeholder="备注" v-model="form.note"></input>
+                        </view>
+                        
+                        <view class="cu-bar bg-white">
+                            <view class="action">
+                                商品图片
                             </view>
-                            
-                            <view class="cu-bar bg-white">
-                                <view class="action">
-                                    发货商品图片
-                                </view>
-                                <view class="action"></view>
-                            </view>
-                            <view class="cu-form-group">
-                                <view class="grid col-4 grid-square flex-sub">
-                                    <view class="bg-img" v-for="(item,index) in upload_images" :key="index" @tap="ViewImage" :data-url="upload_images[index]">
-                                    <image :src="upload_images[index]" mode="aspectFill"></image>
-                                        <view class="cu-tag bg-red" @tap.stop="DelImg" :data-index="index">
-                                            <text class='cuIcon-close'></text>
-                                        </view>
+                            <view class="action"></view>
+                        </view>
+                        <view class="cu-form-group">
+                            <view class="grid col-4 grid-square flex-sub">
+                                <view class="bg-img" v-for="(item,index) in upload_images" :key="index" @tap="ViewImage" :data-url="upload_images[index]">
+                                <image :src="upload_images[index]" mode="aspectFill"></image>
+                                    <view class="cu-tag bg-red" @tap.stop="DelImg" :data-index="index">
+                                        <text class='cuIcon-close'></text>
                                     </view>
-                                    <view class="solids" @tap="ChooseImage">
-                                        <text class='cuIcon-cameraadd'></text>
-                                    </view>
+                                </view>
+                                <view class="solids" @tap="ChooseImage">
+                                    <text class='cuIcon-cameraadd'></text>
                                 </view>
                             </view>
-                            <view class="cu-form-group margin-top bg-gray">
-                                <view class="title">收货人</view>
-                                <input placeholder="收货人" v-model="form.receiver_name"></input>
-                            </view>
-                            <view class="cu-form-group bg-gray">
-                                <view class="title">收货人手机</view>
-                                <input placeholder="收货人手机" v-model="form.receiver_mobile"></input>
-                            </view>
-                            <view class="cu-form-group bg-gray">
-                                <view class="title">收货地址坐标</view>
-                                <input type="text" disabled="true" v-model="form.to_gps"></input>
-                                <text class='cuIcon-locationfill text-orange' @tap="getGps" data-id="to_gps">选择坐标</text>
-                            </view>
-                            <view class="cu-form-group bg-gray">
-                                <view class="title">收货地址</view>
-                                <textarea maxlength="-1" v-model="form.to_address"></textarea>
-                            </view>
-                            
-                            <view class="cu-form-group">
-                                <view class="title">发货地址坐标</view>
-                                <input type="text" disabled="true" v-model="form.from_gps"></input>
-                                <text class='cuIcon-locationfill text-orange' @tap="getGps" data-id="from_gps">选择坐标</text>
-                            </view>
-                            <view class="cu-form-group">
-                                <view class="title">发货地址</view>
-                                <textarea maxlength="-1" v-model="form.from_address"></textarea>
-                            </view>
-                            
-                            <view class="cu-form-group">
-                                <view class="title">货品描述</view>
-                                <textarea placeholder="货品描述" :fixed="true" v-model="form.product_desc">
-                                </textarea>
-                            </view>
-                            <view class="cu-form-group uni-textarea">
-                                <view class="title">备注</view>
-                                <textarea placeholder="备注" v-model="form.note">
-                                </textarea>
-                            </view>
-                            
-                            <view class="padding flex flex-direction">
-                                <button class="cu-btn bg-green lg" @tap="submitForm">确定</button>
-                            </view>
-                        </form>
-                    </view>
-				</view>
-			</view>
-            <AuthCompoents :user_type="auth_type" :auth_modal_show="auth_modal_show" @modalHide2="modalHide2" ></AuthCompoents>
-		</view>
-	</view>
+                        </view>
+                        <view class="padding flex flex-direction">
+                            <button class="cu-btn bg-green lg" @tap="submitForm">确定</button>
+                        </view>
+                    </form>
+                </view>
+            </view>
+        </view>
+        <AuthCompoents :user_type="auth_type" :auth_modal_show="auth_modal_show" @modalHide2="modalHide2" ></AuthCompoents>
+    </view>
 </template>
 
 <script>
