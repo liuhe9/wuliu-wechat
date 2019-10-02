@@ -41,13 +41,6 @@
                     this.getList()
                 }
             },
-			async getList() {
-				let list = await api.list('drivers').then((res) => {return res.data});
-				console.log(list)
-				this.list = list.data;
-				this.list_links = list.links;
-				this.list_meta = list.meta;
-			}
 		}
 	}
 </script>

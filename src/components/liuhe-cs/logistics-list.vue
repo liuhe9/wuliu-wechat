@@ -5,11 +5,11 @@
 				{{item.label}}
 			</view>
 		</scroll-view>
-		<view v-if="list_data.length != 0">
+		<view class="margin-bottom-xl padding-bottom-xl" v-if="list_data.length != 0">
 			<view v-for="item in list_data" :key="item.id" class="cu-list menu solids-top bg-white margin-bottom-xl">
 				<view class="cu-item">
 					<view class="content solid margin-top-df padding-top-df">
-                        <view class="flex bg-gradual-blue solid-bottom margin-top-df padding-top-df justify-between">
+                        <view class="flex bg-grey solid-bottom margin-top-df padding-top-df justify-between">
                             <view class="padding-xs margin-xs">单号 : {{item.tracking_no}} </view>
                             <view class="padding-xs margin-xs" @tap="setClipboardData(item.tracking_no)"><uniTag text="复制"></uniTag></view>
                         </view>
@@ -80,12 +80,12 @@
                         </view>
                         <view class="flex solid-bottom text-white justify-between">
                             <view class="padding-xs margin-xs">
-                                <button class="cu-btn block bg-gray">
+                                <button v-if="item.images" class="cu-btn block bg-gray" @tap="viewImage(item.images)">
                                     <text class="cuIcon-picfill"></text> 发货图片
                                 </button>
                             </view>
                             <view class="padding-xs margin-xs">
-                                <button class="cu-btn block bg-gray">
+                                <button v-if="item.finish_images" class="cu-btn block bg-gray" @tap="viewImage(item.finish_images)">
                                     <text class="cuIcon-picfill"></text> 收货图片
                                 </button>
                             </view>
@@ -110,12 +110,10 @@
 					</view>
 				</view>
 			</view>
-
-            <button class="cu-btn block bg-green margin-bottom-xl ">
-                点击加载更多
-            </button>
-            <view class="padding-bottom-xl margin-bottom-xl">
+            <view class=" bg-white margin-top padding-bottom-xl margin-bottom-xl" v-if="list_meta.total != undefined && list_meta.total != 0">
+                <UniPagination :current="list_meta.current_page" :total="list_meta.total" :pageSize="list_meta.per_page" @change="getList"></UniPagination>
             </view>
+            <view class="margin-top-xl margin-bottom-xl"></view>
 		</view>
 		<view class="cu-list menu-avatar justify-center" v-if="list_data.length == 0">
 			<view class="cu-item">
@@ -124,17 +122,20 @@
 				</view>
 			</view>
 		</view>
- 
         <MapMarkers :modal_show="modal_show" :markers="markers" @modalHide="modalHide"></MapMarkers>
 	</view>
 </template>
 
 <script>
+    import my_global from '@/utils/my_global.js'
     import uniTag from "@/components/uni-ui/uni-tag/uni-tag"
     import MapMarkers from "@/components/liuhe-cs/map"
+    import UniPagination from "@/components/uni-ui/uni-pagination/uni-pagination.vue"
 
 	export default {
-        components: {uniTag, MapMarkers},
+        components: {
+            uniTag, MapMarkers, UniPagination
+        },
 		data() {
 			return {
                 modal_show:false,
@@ -148,17 +149,20 @@
                 }
             },
             list_data:{
-
+            
             },
-			list_type:{
-
+            list_type:{
+            
             },
-			list_from:{
-
+            list_from:{
+            
             },
-			list_links:{
-
+            list_links:{
+            
             },
+            list_meta:{
+            
+            }
 		},
         methods:{
             /**
@@ -192,7 +196,31 @@
                     })
                 }
                 this.modal_show = true
-            }
+            },
+            async getList(e) {
+                this.$emit('getList', {page:e.current})
+                this.modal_show = false
+            },
+            
+            fixImages(old_images) {
+                let images = []
+                if (old_images.length != 0) {
+                    old_images.forEach(function (value) {
+                        images.push(my_global.storage_fix + value);
+                    })
+                }
+                console.log('images',images)
+                return images
+            },
+            
+            viewImage(images) {
+                console.log(images)
+                let urls = this.fixImages(JSON.parse(images))
+            	uni.previewImage({
+            		urls: urls,
+            		current: urls[0]
+            	});
+            },
         }
 	}
 </script>

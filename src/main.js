@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import App from './App'
 import Bar from '@/components/liuhe-cs/bar.vue'
+import UniPaginate from "@/components/uni-ui/uni-pagination/uni-pagination"
 import mixin from '@/mixins/mixin'
 import my_global from '@/utils/my_global'
 

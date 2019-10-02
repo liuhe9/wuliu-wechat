@@ -4,6 +4,7 @@
             <List :list_from="list_from" :list_data="list" :list_links="list_links" :list_title="list_title" :list_type="list_type" :list_meta="list_meta" @getList="getList" @unbinding="unbinding"></List>
         </view>
 		<Binding :user_type="auth_type" :modal_show="modal_show" @modalHide="modalHide" @init="init"></Binding>
+		<Auth :user_type="auth_type" :auth_modal_show="auth_modal_show" @modalHide="modalHide" @init="init"></Auth>
 		<Bar active_bar="1"></Bar>
 	</view>
 </template>
@@ -12,10 +13,12 @@
 	import List from '@/components/liuhe-cs/list.vue'
 	import api from '@/utils/api'
 	import Binding from "@/components/liuhe-cs/binding.vue"
+	import Auth from "@/components/liuhe-cs/auth.vue"
 	export default {
 	    components:{
             Binding,
-			List
+            Auth,
+            List
 		},
 		data() {
 			return {
@@ -27,12 +30,10 @@
                 list_meta: {},
                 page_show: false,
                 modal_show: false,
+                auth_modal_show: false,
                 auth_type: 'manager',
 			}
 		},
-        onReady() {
-            console.log('onready')
-        },
 		methods: {
             async init() {
                 console.log('init')
@@ -44,13 +45,6 @@
                     this.getList()
                 }
             },
-			async getList() {
-				let list = await api.list('managers').then((res) => {return res.data});
-				console.log(list)
-				this.list = list.data;
-				this.list_links = list.links;
-				this.list_meta = list.meta;
-			}
 		}
 	}
 </script>

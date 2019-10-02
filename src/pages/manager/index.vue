@@ -45,21 +45,26 @@
             </view>
         </view>
 		<Binding :user_type="auth_type" :modal_show="modal_show" @modalHide="modalHide" @init="init"></Binding>
-		<Bar active_bar="1"></Bar>
+		<Auth :user_type="auth_type" :auth_modal_show="auth_modal_show" @modalHide="modalHide" @init="init"></Auth>
+        <Bar active_bar="1"></Bar>
 	</view>
 </template>
 
 <script>
+    import api from "@/utils/api"
     import Binding from "@/components/liuhe-cs/binding.vue"
+    import Auth from "@/components/liuhe-cs/auth.vue"
 	export default {
         components:{
-            Binding
+            Binding,
+            Auth,
         },
 		data() {
 			return {
 				title: '我是管理员',
                 page_show: false,
                 modal_show: false,
+                auth_modal_show: false,
 				auth_type: 'manager',
 			}
 		},
@@ -71,7 +76,9 @@
                 if (auth_res == false) {
                     this.modal_show = 'show'
                 } else {
-                    
+                    let me = await api.get('managers/me').then((res) => {
+                        return res.data
+                    })
                 }
             }
 		}

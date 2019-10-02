@@ -63,9 +63,9 @@
 				</view>
 			</view>
 		</view>
-		<button class="cu-btn block bg-blue" v-if="list_data.length != 0 && list_links.next != null">
-			点击加载更多
-		</button>
+        <view class="bg-white margin-top solid-bottom" v-if="list_meta.total != undefined && list_meta.total != 0">
+            <UniPagination :current="list_meta.current_page" :total="list_meta.total" :pageSize="list_meta.per_page" @change="getList"></UniPagination>
+        </view>
         <view class="padding-bottom-xl margin-bottom-xl">
         </view>
             
@@ -74,11 +74,12 @@
 </template>
 
 <script>
-    
     import AddEdit from '@/components/liuhe-cs/add-edit'
+    import UniPagination from "@/components/uni-ui/uni-pagination/uni-pagination.vue"
 	export default {
         components:{
-            AddEdit
+            AddEdit,
+            UniPagination
         },
 		data() {
 			return {
@@ -130,8 +131,8 @@
                 console.log(this.form)
                 this.modal_show = 'show'
             },
-            async getList() {
-                this.$emit('getList')
+            async getList(e) {
+                this.$emit('getList', {page:e.current})
                 this.modal_show = false
             },
             getKeys() {

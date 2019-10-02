@@ -9,7 +9,8 @@
             <LogisticsList :list_from="list_from" :list_data="list" :list_links="list_links" :list_title="list_title" :list_type="list_type"></LogisticsList>
         </view>
         <Binding :user_type="auth_type" :modal_show="modal_show" @modalHide="modalHide" @init="init"></Binding>
-		<Bar active_bar="3"></Bar>
+		<Auth :user_type="auth_type" :auth_modal_show="auth_modal_show" @modalHide="modalHide" @init="init"></Auth>
+        <Bar active_bar="3"></Bar>
 	</view>
 </template>
 
@@ -17,9 +18,11 @@
 	import LogisticsList from '@/components/liuhe-cs/logistics-list.vue'
 	import api from '@/utils/api'
 	import Binding from "@/components/liuhe-cs/binding.vue"
+	import Auth from "@/components/liuhe-cs/auth.vue"
 	export default {
 	    components:{
 	        Binding,
+	        Auth,
 			LogisticsList
 		},
 		data() {
@@ -34,11 +37,12 @@
 				tab_cur: 0,
 				list:[],
 				list_title: '物流列表',
-				list_type: 'logistics',
+				list_type: 'driver/logistics',
 				list_links: {},
-				list_from: 'manager',
+				list_from: 'driver',
                 page_show: false,
                 modal_show: false,
+                auth_modal_show: false,
                 auth_type: 'driver',
 			}
 		},
@@ -53,13 +57,6 @@
                     this.getList()
                 }
             },
-			async getList() {
-				let list = await api.list('logisticses').then((res) => {return res.data});
-				console.log(list)
-				this.list = list.data;
-				this.list_links = list.links;
-				this.list_meta = list.meta;
-			},
 			tabSelect(e) {
 				this.tab_cur = e.currentTarget.dataset.id;
 			},

@@ -2,8 +2,18 @@ import api from '@/utils/api'
 
 export default {
     onLoad() {
+        let self = this
         console.log('onload')
+        uni.$on('modalShow',function(data){
+            console.log('添加 modalShow 自定义事件');
+            self.modalShow('auth_modal_show')
+        })
         this.preInit()
+    },
+    onUnload() {
+        uni.$off('modalShow',function(data){
+            console.log('移除 modalShow 自定义事件');
+        })
     },
     methods: {
         async preInit() {
@@ -48,15 +58,14 @@ export default {
         async checkApiAuth(type = '') {
             let auth_type = type || this.auth_type
             console.log('auth_type',auth_type)
-            console.log('my_global',uni.getStorageSync('api_token'))
-            if (uni.getStorageSync('api_token') == undefined || uni.getStorageSync('api_token') == false) {
-                console.log('openid', uni.getStorageSync('openid'))
-                let res = await api.get('wechat/check', {openid:uni.getStorageSync('openid'), auth_type: auth_type})
-                return res.data.exists ? true : false;
+            
+            let res = await api.get('wechat/check', {openid:uni.getStorageSync('openid'), auth_type: auth_type})
+            if (res.data.exists == false) {
+                uni.setStorageSync(this.my_global.token_key, false)
+                return false
             } else {
                 return true;
-            }
-            
+            }  
         },
         redirect_to(url) {
             uni.redirectTo({ url: url })
@@ -75,6 +84,12 @@ export default {
                     return res.result;
                 }
             });
+        },
+        viewImage(images = 'images') {
+        	uni.previewImage({
+        		urls: this[images],
+        		current: this[images][0]
+        	});
         },
         setClipboardData(data){
             let self = this
@@ -145,8 +160,16 @@ export default {
             })
         },
         
-        modalHide(){
-            this.modal_show = false
+        modalHide(modal_name = 'modal_show'){
+            this[modal_name] = false
+        },
+        
+        modalShow(modal_name = 'auth_modal_show'){
+            console.log('modalShow', modal_name)
+            this[modal_name] = true
+            if (modal_name == 'auth_modal_show') {
+                this.page_show = false
+            }
         },
         async unbinding(id) {
             console.log(id)
@@ -159,7 +182,15 @@ export default {
             } else {
                 this.getList()
             }
-            
+        },
+        async getList(page_obj = 1) {
+            let page = typeof page_obj == 'object' ? page_obj.page : page_obj
+            console.log('page', page)
+        	let list = await api.list(this.list_type+'s', {page:page}).then((res) => {return res})
+            console.log('list', list)
+            this.list = list.data.data;
+            this.list_links = list.data.links;
+            this.list_meta = list.data.meta;
         }
     }
 }

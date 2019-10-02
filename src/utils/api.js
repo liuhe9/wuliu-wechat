@@ -2,11 +2,11 @@ import http from './http'
 
 export default {
     list(resource_name, data) {
-        return http.get('/api/' + resource_name, data)
+        return http.get('/api/' + resource_name, {params:data})
     },
 
     one(resource_name, id, data) {
-        return http.get('/api/' + resource_name + '/' + id, data)
+        return http.get('/api/' + resource_name + '/' + id, {params:data})
     },
 
     put(resource_name, id, data) {
