@@ -92,7 +92,7 @@
                         </view>
                         <view class="flex solid-bottom justify-between">
                             <view class="padding-xs margin-xs">
-                                <button class="cu-btn block bg-red" @tap="chooseDrivers">
+                                <button class="cu-btn block bg-red" @tap="driversList">
                                     <text class="cuIcon-check"></text> 分配司机
                                 </button>
                             </view>
@@ -111,7 +111,7 @@
 				</view>
 			</view>
             <view class=" bg-white margin-top padding-bottom-xl margin-bottom-xl" v-if="list_meta.total != undefined && list_meta.total != 0">
-                <UniPagination :current="list_meta.current_page" :total="list_meta.total" :pageSize="list_meta.per_page" @change="getList"></UniPagination>
+                <uniPagination :current="list_meta.current_page" :total="list_meta.total" :pageSize="list_meta.per_page" @change="getList"></uniPagination>
             </view>
             <view class="margin-top-xl margin-bottom-xl"></view>
 		</view>
@@ -122,24 +122,29 @@
 				</view>
 			</view>
 		</view>
-        <MapMarkers :modal_show="modal_show" :markers="markers" @modalHide="modalHide"></MapMarkers>
+        <mapMarkers :modal_show="modal_show" :markers="markers" @modalHide="modalHide"></mapMarkers>
+        <mySelect :modal_show="select_modal" :list_data="drivers" @selectModalHide="selectModalHide"></mySelect>
 	</view>
 </template>
 
 <script>
+    import api from '@/utils/api.js'
     import my_global from '@/utils/my_global.js'
     import uniTag from "@/components/uni-ui/uni-tag/uni-tag"
-    import MapMarkers from "@/components/liuhe-cs/map"
-    import UniPagination from "@/components/uni-ui/uni-pagination/uni-pagination.vue"
+    import mapMarkers from "@/components/liuhe-cs/map"
+    import uniPagination from "@/components/uni-ui/uni-pagination/uni-pagination.vue"
+    import mySelect from "@/components/liuhe-cs/my-select.vue"
 
 	export default {
         components: {
-            uniTag, MapMarkers, UniPagination
+            uniTag, mapMarkers, uniPagination, mySelect
         },
 		data() {
 			return {
                 modal_show:false,
+                select_modal:false,
                 markers:[],
+                drivers:[],
 			};
 		},
 		props:{
@@ -222,9 +227,21 @@
             	});
             },
             
+            async driversList() {
+                let drivers = await api.get('drivers', {per_page:1000}).then((res) => {
+                    return res.data.data
+                })
+                this.drivers = drivers
+                console.log(drivers)
+                this.select_modal = true
+            },
             chooseDrivers() {
                 console.log(11)
             },
+            
+            selectModalHide() {
+                this.select_modal = false
+            }
         }
 	}
 </script>

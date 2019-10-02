@@ -85,10 +85,22 @@ export default {
                 }
             });
         },
-        viewImage(images = 'images') {
+        fixImages(old_images) {
+            let images = []
+            if (old_images.length != 0) {
+                old_images.forEach(function (value) {
+                    images.push(my_global.storage_fix + value);
+                })
+            }
+            console.log('images',images)
+            return images
+        },
+        viewImage(images) {
+            console.log(images)
+            let urls = this.fixImages(JSON.parse(images))
         	uni.previewImage({
-        		urls: this[images],
-        		current: this[images][0]
+        		urls: urls,
+        		current: urls[0]
         	});
         },
         setClipboardData(data){
