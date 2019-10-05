@@ -101,6 +101,9 @@
             },
             list_meta:{
             
+            },
+            list_page:{
+
             }
 		},
         methods:{
@@ -119,8 +122,9 @@
                 console.log(this.form)
                 this.modal_show = 'show'
             },
-            async getList(e) {
-                this.$emit('getList', {page:e.current})
+            async getList(e = 1) {
+                let page = typeof e == 'object' ? e.current : e
+                this.$emit('getList', {page:page})
                 this.modal_show = false
             },
             getKeys() {

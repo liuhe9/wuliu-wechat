@@ -1,10 +1,6 @@
 <template>
     <view>
         <view style="position: fixed; bottom: 0; width: 100%; ">
-            <view class="flex justify-center margin-bottom-lg text-grey">
-                <view class="margin-xs ">技术支持</view>
-                <view class="margin-xs ">liuhe9@qq.com</view>
-            </view>
             <view class="cu-bar tabbar padding-bottom-xs bg-white">
                 <view class="action" :class="[active_bar==0?'text-blue':'text-gray']" v-on:touchstart="redirect_to('/pages/index/index')">
                     <view class="cuIcon-home" ></view> 首页
@@ -23,17 +19,17 @@
                     <view class="cuIcon-location"> </view> 我是司机
                 </view>
             </view>
-            <ConsignerForm :modal_show="modal_show" @modalHide="modalHide"></ConsignerForm>
+            <consignerForm :modal_show="modal_show" @modalHide="modalHide"></consignerForm>
         </view>
 	</view>
 </template>
 
 <script>
-	import ConsignerForm from '@/components/liuhe-cs/consigner-form'
+	import consignerForm from '@/components/liuhe-cs/consigner-form'
 
 	export default {
 		components:{
-			ConsignerForm
+			consignerForm
 		},
 		data() {
 			return {

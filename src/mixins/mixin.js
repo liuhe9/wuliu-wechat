@@ -112,8 +112,9 @@ export default {
                 }
             });
         },
-        showToast(title, time = 2000) {
+        showToast(title, time = 2000, icon = 'none') {
             uni.showToast({
+                icon:icon,
                 title: title,
                 duration: time
             });
@@ -197,12 +198,24 @@ export default {
         },
         async getList(page_obj = 1) {
             let page = typeof page_obj == 'object' ? page_obj.page : page_obj
+            this.list_page = page
             console.log('page', page)
-        	let list = await api.list(this.list_type+'s', {page:page}).then((res) => {return res})
+            let params = {page:this.list_page}
+            if (this.tab_cur != undefined) {
+                params.status = this.tab_cur
+            }
+            console.log('params', params)
+        	let list = await api.list(this.list_type+'s', params).then((res) => {return res})
             console.log('list', list)
             this.list = list.data.data;
             this.list_links = list.data.links;
             this.list_meta = list.data.meta;
-        }
+        },
+        async initNav() {
+            let navs = await api.get('logisticss/status', {list_from:this.list_from}).then((res) => {
+                return res.data
+            })
+            this.list_navs = navs
+        },
     }
 }

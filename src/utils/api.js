@@ -12,12 +12,16 @@ export default {
     put(resource_name, id, data) {
         return http.put('/api/' + resource_name + '/' + id, data)
     },
-    
+
     get(resource_name, data) {
         return http.get('/api/' + resource_name, {params:data})
     },
 
     post(resource_name, data) {
         return http.post('/api/' + resource_name, data)
+    },
+
+    putCustomer(resource_name, data) {
+        return http.put('/api/' + resource_name, data)
     },
 }

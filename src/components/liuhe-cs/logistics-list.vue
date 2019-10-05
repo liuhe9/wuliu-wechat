@@ -1,19 +1,13 @@
 <template>
 	<view>
-        <scroll-view scroll-x class="bg-white nav text-center">
-			<view class="cu-item" :class="item.key==tab_cur?'text-blue cur':''" v-for="(item,index) in tab_data" :key="index" @tap="tabSelect" :data-id="item.key">
-				{{item.label}}
-			</view>
-		</scroll-view>
 		<view class="margin-bottom-xl padding-bottom-xl" v-if="list_data.length != 0">
-			<view v-for="item in list_data" :key="item.id" class="cu-list menu solids-top bg-white margin-bottom-xl">
+			<view v-for="(item, idx) in list_data" :key="item.id" class="cu-list menu solids-top bg-white margin-bottom-xl">
 				<view class="cu-item">
 					<view class="content solid margin-top-df padding-top-df">
                         <view class="flex bg-grey solid-bottom margin-top-df padding-top-df justify-between">
                             <view class="padding-xs margin-xs">单号 : {{item.tracking_no}} </view>
-                            <view class="padding-xs margin-xs" @tap="setClipboardData(item.tracking_no)"><uniTag text="复制"></uniTag></view>
+                            <view class="padding-xs margin-xs" @tap="setClipboardData(item.tracking_no)">{{item.status_name}}<uniTag text="复制"></uniTag></view>
                         </view>
-                        
                         <view class="flex bg-gray solid-bottom justify-between">
                             <view class="padding-xs margin-xs">收货人 : {{item.receiver_name}} </view>
                             <view class="padding-xs margin-xs">
@@ -21,7 +15,7 @@
                                     <view class="cu-tag bg-grey">
                                         <text class="cuIcon-mobile"></text>
                                     </view>
-                                    <view class="cu-tag line-red">
+                                    <view class="cu-tag">
                                         {{item.receiver_mobile}}
                                     </view>
                                 </view>
@@ -33,7 +27,6 @@
                                 <view class="cuIcon-location"> </view>
                             </view>
                         </view>
-                        
                         <view class="flex solid-bottom justify-between">
                             <view class="padding-xs margin-xs">发货人 : {{item.consigner_name}} </view>
                             <view class="padding-xs margin-xs">
@@ -41,7 +34,7 @@
                                     <view class="cu-tag bg-grey">
                                         <text class="cuIcon-mobile"></text>
                                     </view>
-                                    <view class="cu-tag line-red">
+                                    <view class="cu-tag">
                                         {{item.consigner_mobile}}
                                     </view>
                                 </view>
@@ -63,16 +56,16 @@
                         <view class="flex solid-bottom justify-between">
                             <view class="padding-xs margin-xs">创建时间 : {{item.created_at}}</view>
                         </view>
-                        <view v-if="item.drivers.data.length != 0 && item.drivers != undefined">
-                            <view class="flex solid-bottom justify-between" v-for="(idx, driver) in item.drivers" :key="driver.id">
-                                <view class="padding-xs margin-xs">司机 : {{driver.name}} </view>
+                        <view v-if="item.drivers.length != 0 && item.drivers != undefined">
+                            <view class="flex solid-bottom justify-between" v-for="driver in item.drivers" :key="driver.id">
+                                <view class="padding-xs margin-xs">司机 : {{driver.driver.name}} </view>
                                 <view class="padding-xs margin-xs">
-                                    <view class="cu-capsule radius" @tap="makePhoneCall(driver.mobile)">
+                                    <view class="cu-capsule radius" @tap="makePhoneCall(driver.driver.mobile)">
                                         <view class="cu-tag bg-grey">
                                             <text class="cuIcon-mobile"></text>
                                         </view>
-                                        <view class="cu-tag line-red">
-                                            {{driver.mobile}}
+                                        <view class="cu-tag">
+                                            {{driver.driver.mobile}}
                                         </view>
                                     </view>
                                 </view>
@@ -92,17 +85,17 @@
                         </view>
                         <view class="flex solid-bottom justify-between">
                             <view class="padding-xs margin-xs">
-                                <button class="cu-btn block bg-red" @tap="driversList">
-                                    <text class="cuIcon-check"></text> 分配司机
+                                <button class="cu-btn block bg-green" v-if="list_from == 'manager'" @tap="driversList(idx)">
+                                    <text class="cuIcon-deliver"></text> 分配司机
                                 </button>
                             </view>
                             <view class="padding-xs margin-xs">
-                                <button class="cu-btn block bg-red">
-                                    <text class="cuIcon-check"></text> 确认
+                                <button class="cu-btn block bg-green" v-if="list_from != 'consigner' && item.next_status != null" @tap="changeStatus(item.next_status.code)">
+                                    <text class="cuIcon-check"></text> {{item.next_status.name}}
                                 </button>
                             </view>
                             <view class="padding-xs margin-xs">
-                                <button class="cu-btn block bg-white">
+                                <button class="cu-btn block bg-gray" @tap="showMapGps(idx)">
                                     <text class="cuIcon-location"></text> 查看定位
                                 </button>
                             </view>
@@ -123,7 +116,7 @@
 			</view>
 		</view>
         <mapMarkers :modal_show="modal_show" :markers="markers" @modalHide="modalHide"></mapMarkers>
-        <mySelect :modal_show="select_modal" :list_data="drivers" @selectModalHide="selectModalHide"></mySelect>
+        <mySelect :select_title="select_title" :select_modal="select_modal" :select_list="drivers" :selected_list="selected_list" @selectModalHide="selectModalHide" @confirmSelectedList="confirmSelectedList"></mySelect>
 	</view>
 </template>
 
@@ -133,7 +126,7 @@
     import uniTag from "@/components/uni-ui/uni-tag/uni-tag"
     import mapMarkers from "@/components/liuhe-cs/map"
     import uniPagination from "@/components/uni-ui/uni-pagination/uni-pagination.vue"
-    import mySelect from "@/components/liuhe-cs/my-select.vue"
+    import mySelect from '@/components/liuhe-cs/my-select.vue'
 
 	export default {
         components: {
@@ -145,6 +138,9 @@
                 select_modal:false,
                 markers:[],
                 drivers:[],
+                selected_list: [],
+                select_title: '选择司机',
+                cur_idx: 0
 			};
 		},
 		props:{
@@ -167,14 +163,17 @@
             },
             list_meta:{
             
-            }
+            },
+
+            page:{
+            
+            },
+            
 		},
+        mounted() {
+            this.initNav()
+        },
         methods:{
-            /**
-             * @param {string|array} gps(string:经度,纬度；array:数组)
-             * 
-             * 
-             * **/
             showMap(gps_points, type = 'start') {
                 this.markers = [];
                 if (typeof gps_points == 'string') {
@@ -194,7 +193,7 @@
                 } else {
                     let self = this
                     gps_points.forEach(function(value){
-                        let gps = value['gps'].split(',')
+                        let gps = value.gps.split(',')
                         let mapIcon = self.mapIcon(value['icon_index'])
                         let marker = self.mapMaker(gps[0], gps[1], mapIcon)
                         self.markers.push(marker)
@@ -202,11 +201,27 @@
                 }
                 this.modal_show = true
             },
-            async getList(e) {
-                this.$emit('getList', {page:e.current})
+            showMapGps(idx) {
+                this.cur_idx = idx
+                let item = this.list_data[idx]
+                let gps_arr = []
+                if (item.drivers.length != 0) {
+                    item.drivers.forEach(function(value, idx){
+                        if (value.latest_gps) {
+                            gps_arr.push({'gps': value.latest_gps, 'icon_index': 3})
+                        }
+                    })
+                }
+                gps_arr.push({'gps': item.from_gps, 'icon_index': 1})
+                gps_arr.push({'gps': item.to_gps, 'icon_index': 2})
+                this.showMap(gps_arr, 'all')
+            },
+            async getList(e = 1) {
+                let page = typeof e == 'object' ? e.current : e
+                this.$emit('getList', {page:page})
                 this.modal_show = false
             },
-            
+
             fixImages(old_images) {
                 let images = []
                 if (old_images.length != 0) {
@@ -217,7 +232,7 @@
                 console.log('images',images)
                 return images
             },
-            
+
             viewImage(images) {
                 console.log(images)
                 let urls = this.fixImages(JSON.parse(images))
@@ -226,21 +241,57 @@
             		current: urls[0]
             	});
             },
-            
-            async driversList() {
+
+            async driversList(idx) {
+                this.cur_idx = idx
+                this.selected_list = this.formatSelectedList(this.list_data[idx]['drivers'])
+                console.log('idx', idx)
+                console.log('item', this.list_data[idx])
                 let drivers = await api.get('drivers', {per_page:1000}).then((res) => {
                     return res.data.data
                 })
-                this.drivers = drivers
-                console.log(drivers)
+                this.drivers = this.formatList(drivers)
+                console.log(this.drivers)
                 this.select_modal = true
             },
-            chooseDrivers() {
-                console.log(11)
+            formatSelectedList(drivers) {
+                let selected_list = []
+                if (drivers.length != 0) {
+                    drivers.forEach(function(value, idx){
+                        selected_list.push(value.driver_id)
+                    })
+                }
+                return selected_list;
             },
-            
+            formatList(drivers) {
+                let format_list = []
+                if (drivers.length != 0) {
+                    let selected_list = this.selected_list
+                    console.log('selected_list',selected_list)
+                    drivers.forEach(function(value, idx){
+                        value.checked = selected_list.length !=0 ? (selected_list.includes(value.id) ? true : false) : false
+                        format_list.push(value)
+                    })
+                }
+                return format_list;
+            },
             selectModalHide() {
                 this.select_modal = false
+            },
+            async confirmSelectedList(params) {
+                console.log(params)
+                this.selected_list = params.selected_list
+                if (this.selected_list.length > 0) {
+                    let l_res = await api.putCustomer('logisticss/'+this.list_data[this.cur_idx]['id']+'/drivers', {drivers:this.selected_list}).then((res) =>{
+                        return res
+                    })
+                    this.getList()
+                    console.log('l_res', l_res);
+                }
+                this.select_modal = false
+            },
+            changeStatus(status) {
+
             }
         }
 	}

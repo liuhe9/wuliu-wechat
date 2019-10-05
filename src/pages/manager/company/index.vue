@@ -24,12 +24,15 @@
 		</form>
         </view>
         <Binding :user_type="auth_type" :modal_show="modal_show" @modalHide="modalHide" @init="init"></Binding>
+        <Auth :user_type="auth_type" :auth_modal_show="auth_modal_show" @modalHide="modalHide" @init="init"></Auth>
 		<Bar active_bar="1"></Bar>
 	</view>
 </template>
 
 <script>
-	import Binding from "@/components/liuhe-cs/binding.vue"
+    import api from '@/utils/api'
+    import Binding from "@/components/liuhe-cs/binding.vue"
+    import Auth from "@/components/liuhe-cs/auth.vue"
 	export default {
 	    components:{
 	        Binding

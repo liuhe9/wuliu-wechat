@@ -1,24 +1,25 @@
 <template>
 	<view>
-        <view class="cu-modal" :class="[modal_show ?'show':'']">
+        <view class="cu-modal" :class="[select_modal ?'show':'']">
         	<view class="cu-dialog">
         		<view class="cu-bar bg-white justify-end">
-                    <view class="content">选择司机</view>
+                    <view class="content">{{select_title}}</view>
                         <view class="action" @tap="selectModalHide">
                             <text class="cuIcon-close text-red"></text>
                         </view>
                     </view>
-                    <view class="padding flex flex-direction" v-if="modal_show">
-                        <view class="uni-list">
-                            <checkbox-group @change="checkboxChange">
-                                <label class="uni-list-cell uni-list-cell-pd" v-for="item in formatList" :key="item.id">
-                                    <view>
-                                        <checkbox :value="item.id" :checked="item.checked" />
-                                    </view>
-                                    <view>{{item.name}}</view>
-                                </label>
-                            </checkbox-group>
-                        </view>
+                    <view>
+                       <checkbox-group class="block" @change="checkboxChange">
+                            <view class="cu-form-group" v-for="(item, idx) in select_list">
+                                <view class="title">{{item.name +'-'+ item.mobile}}</view>
+                                <checkbox :class="item.checked?'checked':''" :checked="item.checked?true:false" :value="item.id"></checkbox>
+                            </view>
+                        </checkbox-group>
+                    </view>
+                    <view class="margin-xs">
+                        <button class="cu-btn block bg-green" @tap="confirmSelectedList">
+                            <text class="cuIcon-check"></text> 确定
+                        </button>
                     </view>
                 </view>
         	</view>
@@ -27,45 +28,47 @@
 </template>
 
 <script>
-    import api from '@/utils/api'
-    import my_global from '@/utils/my_global'
 	export default {
 		data() {
 			return {
-				
+                tmp_selected_list:[]
 			}
 		},
 		props:{
-		    list_data: {
-		    
-		    },
-            select_type: {
-                
+            select_title: {
             },
-            modal_show: {
-                
+		    select_list: {
+		    },
+            select_modal: {
+            },
+            selected_list: {
+
             }
 		},
-        computed:{
-            formatList() {
-                let format_list = []
-                if (this.list_data.length != 0) {
-                    this.list_data.forEach(function(value, idx){
-                        format_list.push({
-                            'id': value.id,
-                            'name': value.name,
-                            'checked': false
-                        })
-                    })
-                }
-                
-                return format_list;
+        watch: {
+            selected_list(){
+                this.tmp_selected_list = this.selected_list
             }
         },
 		methods:{
 		    selectModalHide() {
 				this.$emit('selectModalHide')
 			},
+            checkboxChange(e) {
+                if (e.detail.value.length == 0) {
+                    uni.showToast({
+                        icon: 'none',
+                        title: '请至少选择一项',
+                        duration: 3000
+                    });
+                } else {
+                    this.tmp_selected_list = e.detail.value
+                }
+            },
+            confirmSelectedList() {
+                console.log(this.tmp_selected_list)
+                this.$emit('confirmSelectedList', {selected_list: this.tmp_selected_list})
+            }
         }
 	}
 </script>
