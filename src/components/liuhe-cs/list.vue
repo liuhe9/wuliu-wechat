@@ -101,9 +101,6 @@
             },
             list_meta:{
             
-            },
-            list_page:{
-
             }
 		},
         methods:{

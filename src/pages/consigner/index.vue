@@ -9,7 +9,7 @@
 				{{item.name}}
 			</view>
 		</scroll-view>
-		<LogisticsList :list_from="list_from" :list_data="list" :list_links="list_links" :list_title="list_title" :list_type="list_type" :list_meta="list_meta" :list_page="list_page" @getList="getList"></LogisticsList>
+		<LogisticsList :list_from="list_from" :list_data="list" :list_links="list_links" :list_title="list_title" :list_type="list_type" :list_meta="list_meta" @getList="getList"></LogisticsList>
         </view>
         <Binding :user_type="auth_type" :modal_show="modal_show" @modalHide="modalHide" @init="init"></Binding>
 		<Auth :user_type="auth_type" :auth_modal_show="auth_modal_show" @modalHide="modalHide" @init="init"></Auth>
@@ -30,13 +30,16 @@
 		},
 		data() {
 			return {
+                list_search: {
+                    page: 1,
+                    status: -1
+                },
 				list:[],
 				list_title: '物流列表',
 				list_type: 'consigner/logistics',
 				list_links: {},
 				list_from: 'consigner',
 				list_meta: {},
-				list_page: 1,
                 page_show: false,
                 modal_show: false,
                 auth_modal_show: false,

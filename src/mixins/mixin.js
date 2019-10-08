@@ -222,12 +222,11 @@ export default {
             let page = typeof page_obj == 'object' ? page_obj.page : page_obj
             this.list_page = page
             console.log('page', page)
-            let params = {page:this.list_page}
+            this.list_search.page = page
             if (this.tab_cur != undefined) {
-                params.status = this.tab_cur
+                this.list_search.status = this.tab_cur
             }
-            console.log('params', params)
-        	let list = await api.list(this.list_type+'s', params).then((res) => {return res})
+        	let list = await api.list(this.list_type+'s', this.list_search).then((res) => {return res})
             console.log('list', list)
             if (list.data.data != undefined) {
                 this.list = list.data.data;

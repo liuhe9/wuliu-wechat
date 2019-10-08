@@ -40,15 +40,21 @@ http.interceptor.response((response) => { /* 请求之后拦截器 */
             console.log('modalShow')
             uni.$emit('modalShow')
         }
+    } else if (response.statusCode == 422) {
+        let message = response.data.message
+        if (typeof response.data.errors == 'object') {
+            message = ''
+            for(let idx in response.data.errors) {
+                message += response.data.errors[idx] + '\n'
+            }
+            uni.showModal({
+                title: '错误',
+                content: message
+            })
+        }
     } else {
         console.log('other', response)
-        // let message = response.data.message
-        // if (typeof response.data.errors == 'object') {
-        //     message = ''
-        //     for(let idx in response.data.errors) {
-        //         message += response.data.errors[idx] + ';'
-        //     }
-        // }
+        
     }
     
     return response

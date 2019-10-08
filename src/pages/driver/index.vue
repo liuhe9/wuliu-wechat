@@ -32,13 +32,16 @@
 		},
 		data() {
 			return {
+                list_search: {
+                    page: 1,
+                    status: -1
+                },
 				list:[],
 				list_title: '物流列表',
 				list_type: 'driver/logistics',
 				list_links: {},
 				list_from: 'driver',
 				list_meta: {},
-				list_page: 1,
                 page_show: false,
                 modal_show: false,
                 auth_modal_show: false,

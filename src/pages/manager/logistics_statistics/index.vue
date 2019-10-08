@@ -33,19 +33,29 @@
         },
 		data() {
 			return {
-				list_data:[
-					{'date' : '09-18', 'total':100},{'date' : '09-17', 'total':150},{'date' : '09-16', 'total':200},
-					{'date' : '09-15', 'total':100},{'date' : '09-14', 'total':150},{'date' : '09-13', 'total':200},
-					{'date' : '09-12', 'total':100},{'date' : '09-11', 'total':150},{'date' : '09-10', 'total':200},
-					{'date' : '09-09', 'total':100},{'date' : '09-08', 'total':150},{'date' : '09-07', 'total':200},
-					{'date' : '09-06', 'total':100},{'date' : '09-05', 'total':150},{'date' : '09-04', 'total':200},
-					{'date' : '09-03', 'total':100},{'date' : '09-02', 'total':150},{'date' : '09-01', 'total':200},
-				],
+                list_search: {
+                    page: 1,
+                    type: 'day'
+                },
+                // list:[],
+                list:[
+                	{'date' : '09-18', 'total':100},{'date' : '09-17', 'total':150},{'date' : '09-16', 'total':200},
+                	{'date' : '09-15', 'total':100},{'date' : '09-14', 'total':150},{'date' : '09-13', 'total':200},
+                	{'date' : '09-12', 'total':100},{'date' : '09-11', 'total':150},{'date' : '09-10', 'total':200},
+                	{'date' : '09-09', 'total':100},{'date' : '09-08', 'total':150},{'date' : '09-07', 'total':200},
+                	{'date' : '09-06', 'total':100},{'date' : '09-05', 'total':150},{'date' : '09-04', 'total':200},
+                	{'date' : '09-03', 'total':100},{'date' : '09-02', 'total':150},{'date' : '09-01', 'total':200},
+                ],
+                list_title: '管理员',
+                list_type: 'logistics/statistics',
+                list_links: {},
+                list_from: 'manager',
+                list_meta: {},
 				tab_data:[
+                    {'label' : '按日', 'key':'day'},
 					{'label' : '按月', 'key':'month'},
-					{'label' : '按日', 'key':'day'},
 				],
-				tab_cur: 'month',
+				tab_cur: 'day',
                 page_show: false,
                 modal_show: false,
                 auth_type: 'manager',
