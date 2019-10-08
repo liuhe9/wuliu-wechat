@@ -115,7 +115,7 @@
 				</view>
 			</view>
 		</view>
-        <mapMarkers :modal_show="modal_show" :markers="markers" @modalHide="modalHide"></mapMarkers>
+        <mapMarkers :modal_show="modal_show" :markers="markers" :map_scale="map_scale" @modalHide="modalHide"></mapMarkers>
         <mySelect :select_title="select_title" :select_modal="select_modal" :select_list="drivers" :selected_list="selected_list" @selectModalHide="selectModalHide" @confirmSelectedList="confirmSelectedList"></mySelect>
 	</view>
 </template>
@@ -137,6 +137,7 @@
                 modal_show:false,
                 select_modal:false,
                 markers:[],
+                map_scale: 15,
                 drivers:[],
                 selected_list: [],
                 select_title: '选择司机',
@@ -190,7 +191,9 @@
                     let mapIcon = this.mapIcon(icon_index)
                     let marker = this.mapMaker(gps[0], gps[1], mapIcon)
                     this.markers.push(marker)
+                    this.map_scale = 15
                 } else {
+                    console.log('gps_points', gps_points)
                     let self = this
                     gps_points.forEach(function(value){
                         let gps = value.gps.split(',')
@@ -198,6 +201,7 @@
                         let marker = self.mapMaker(gps[0], gps[1], mapIcon)
                         self.markers.push(marker)
                     })
+                    this.map_scale = 14
                 }
                 this.modal_show = true
             },

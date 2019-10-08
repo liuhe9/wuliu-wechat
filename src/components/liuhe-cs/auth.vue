@@ -44,6 +44,9 @@
             async getWechatUserInfo(e) {
                 let self = this
                 console.log(e)
+                uni.showLoading({
+                    title: '加载中'
+                });
                 if (e.detail.errMsg == 'getUserInfo:ok') {
                     let request_data = {openid:uni.getStorageSync('openid'), user_type:this.user_type, encrypted_data:e.detail}
                     console.log('user_info_request_data', request_data);
@@ -51,6 +54,7 @@
                         console.log('res1',res1)
                         return res1.data
                     })
+                    uni.hideLoading()
                     console.log('login', res)
                     if (res.access_token != undefined && res.access_token) {
                         uni.setStorageSync(my_global.token_key, res.access_token)

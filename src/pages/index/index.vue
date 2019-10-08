@@ -1,37 +1,48 @@
 <template>
-	<view class="page show">
-        <view v-if="page_show">
-		<view class="cu-card case" :class="isCard?'no-card':''">
-			<view class="cu-item shadow">
-				<view class="image">
-					<image src="https://ossweb-img.qq.com/images/lol/web201310/skin/big10006.jpg" mode="widthFix"></image>
-					<image src="https://ossweb-img.qq.com/images/lol/web201310/skin/big10006.jpg" mode="widthFix"></image>
-					<image src="https://ossweb-img.qq.com/images/lol/web201310/skin/big10006.jpg" mode="widthFix"></image>
-					<image src="https://ossweb-img.qq.com/images/lol/web201310/skin/big10006.jpg" mode="widthFix"></image>
-				</view>
-			</view>
-		</view>
-		</view>
+	<view class="page">
+        <view style="text-align: center">
+            <image class="my_image" lazy-load="true" v-if="format_images.length > 0" v-for="(item, idx) in format_images" :key="idx" :src="item" mode="widthFix"></image>
+        </view>
 		<Bar></Bar>
 	</view>
 </template>
 
 <script>
-	import Binding from "@/components/liuhe-cs/binding.vue"
+    import api from '@/utils/api'
+    import my_global from '@/utils/my_global'
 	export default {
-	    components:{
-	        Binding
-        },
 		data() {
 			return {
-				title: 'Hello',
-                page_show: false,
+				title: '首页',
+                images: [],
                 modal_show: false,
 			}
 		},
+        computed: {
+            format_images:function() {
+                let images = []
+                if (this.images.length != 0) {
+                    this.images.forEach(function (value) {
+                        images.push(my_global.storage_fix + value);
+                    })
+                }
+                console.log('images',images)
+                return images
+            }
+        },
 		methods: {
             init() {
-            	console.log('init')
+            	this.getCompanyInfo()
+            },
+            getCompanyInfo() {
+                uni.showLoading({
+                    title: '加载中'
+                });
+                api.get('companies').then((res) => {
+                    console.log(res)
+                    this.images = res.data.images == null ? [] : JSON.parse(res.data.images)
+                });
+                uni.hideLoading() 
             },
 		}
 	}

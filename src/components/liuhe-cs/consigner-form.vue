@@ -52,13 +52,13 @@
                         </view>
                         <view class="cu-form-group">
                             <view class="grid col-4 grid-square flex-sub">
-                                <view class="bg-img" v-for="(item,index) in upload_images" :key="index" @tap="ViewImage" :data-url="upload_images[index]">
-                                <image :src="upload_images[index]" mode="aspectFill"></image>
-                                    <view class="cu-tag bg-red" @tap.stop="DelImg" :data-index="index">
+                                <view class="bg-img" v-for="(item,index) in upload_images" :key="index" @tap="viewImage" :data-url="upload_images[index]">
+                                <image :src="upload_images[index]" mode="widthFix"></image>
+                                    <view class="cu-tag bg-red" @tap.stop="delImg" :data-index="index">
                                         <text class='cuIcon-close'></text>
                                     </view>
                                 </view>
-                                <view class="solids" @tap="ChooseImage">
+                                <view class="solids" @tap="chooseImage(form.images)">
                                     <text class='cuIcon-cameraadd'></text>
                                 </view>
                             </view>
@@ -133,19 +133,12 @@
             modalShow () {
                 this.auth_modal_show = true
             },
-            RegionChange(e) {
-				this.form.region = e.detail.value
-			},
-            RegionChange2(e) {
-            	this.form.region_from = e.detail.value
-            },
-            ChooseImage() {
-                let self = this
-				uni.chooseImage({
-					count: 9, //默认9
-					sizeType: ['original', 'compressed'], //可以指定是原图还是压缩图，默认二者都有
-					sourceType: ['album'], //从相册选择
-					success: (res) => {
+            chooseImage(obj) {
+            	uni.chooseImage({
+            		count: 9, //默认9
+            		sizeType: ['original', 'compressed'], //可以指定是原图还是压缩图，默认二者都有
+            		sourceType: ['album'], //从相册选择
+            		success: (res) => {
                         res.tempFilePaths.forEach(function (tmpImg) {
                             console.log(tmpImg)
                             uni.uploadFile({
@@ -157,21 +150,21 @@
                                 },
                                 success: (uploadFileRes) => {
                                     console.log(uploadFileRes.data)
-                                    self.form.images.push(uploadFileRes.data)
-                                    console.log(self.form.images)
+                                    obj.push(uploadFileRes.data)
+                                    console.log(obj)
                                 }
                             })
                         })
-					}
-				});
-			},
-			ViewImage(e) {
+            		}
+            	});
+            },
+			viewImage(e) {
 				uni.previewImage({
 					urls: this.upload_images,
 					current: e.currentTarget.dataset.url
 				});
 			},
-			DelImg(e) {
+			delImg(e) {
 				uni.showModal({
 					title: '删除图片',
 					content: '确定要删除图片吗？',

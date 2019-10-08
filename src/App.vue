@@ -16,4 +16,10 @@
 	/*每个页面公共css */
 	@import "/static/colorui/main.css";
 	@import "/static/colorui/icon.css";
+    
+    .my_image{
+        display: block;
+        margin: auto;
+        width: 100%;
+    }
 </style>

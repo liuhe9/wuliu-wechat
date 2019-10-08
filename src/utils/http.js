@@ -13,7 +13,6 @@ http.interceptor.request((config, cancel) => { /* 请求之前拦截器 */
     ...config.header,
   }
   
-  
   if (uni.getStorageSync(my_global.token_key) != undefined && uni.getStorageSync(my_global.token_key) != false) {
       config.header = {
           Authorization: 'Bearer ' + uni.getStorageSync(my_global.token_key)
@@ -43,13 +42,13 @@ http.interceptor.response((response) => { /* 请求之后拦截器 */
         }
     } else {
         console.log('other', response)
-        let message = response.data.message
-        if (typeof response.data.errors == 'object') {
-            message = ''
-            for(let idx in response.data.errors) {
-                message += response.data.errors[idx] + ';'
-            }
-        }
+        // let message = response.data.message
+        // if (typeof response.data.errors == 'object') {
+        //     message = ''
+        //     for(let idx in response.data.errors) {
+        //         message += response.data.errors[idx] + ';'
+        //     }
+        // }
     }
     
     return response

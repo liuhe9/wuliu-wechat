@@ -38,6 +38,9 @@
 			},
             async getPhoneSuccess(e) {
                 console.log(e)
+                uni.showLoading({
+                    title: '加载中'
+                });
                 if (e.detail.errMsg == 'getPhoneNumber:ok') {
                     let request_data = {openid:uni.getStorageSync('openid'), user_type:this.user_type, encrypted_data:e.detail}
                     console.log('phone_request_data', request_data);
@@ -45,6 +48,7 @@
                         console.log('res1',res1)
                         return res1.data
                     })
+                    uni.hideLoading()
                     if (res.status == false) {
                         uni.showModal({
                             title: '绑定失败',

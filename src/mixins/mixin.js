@@ -1,4 +1,5 @@
 import api from '@/utils/api'
+import my_global from '@/utils/my_global'
 
 export default {
     onLoad() {
@@ -85,6 +86,31 @@ export default {
                 }
             });
         },
+        chooseImage(obj) {
+        	uni.chooseImage({
+        		count: 9, //默认9
+        		sizeType: ['original', 'compressed'], //可以指定是原图还是压缩图，默认二者都有
+        		sourceType: ['album'], //从相册选择
+        		success: (res) => {
+                    res.tempFilePaths.forEach(function (tmpImg) {
+                        console.log(tmpImg)
+                        uni.uploadFile({
+                            url: my_global.__BASE_URL__+'/api/file', 
+                            filePath: tmpImg,
+                            name: 'file',
+                            formData: {
+                                'floder': 'logistics'
+                            },
+                            success: (uploadFileRes) => {
+                                console.log(uploadFileRes.data)
+                                obj.push(uploadFileRes.data)
+                                console.log(obj)
+                            }
+                        })
+                    })
+        		}
+        	});
+        },
         fixImages(old_images) {
             let images = []
             if (old_images.length != 0) {
@@ -94,14 +120,6 @@ export default {
             }
             console.log('images',images)
             return images
-        },
-        viewImage(images) {
-            console.log(images)
-            let urls = this.fixImages(JSON.parse(images))
-        	uni.previewImage({
-        		urls: urls,
-        		current: urls[0]
-        	});
         },
         setClipboardData(data){
             let self = this
@@ -197,6 +215,10 @@ export default {
             }
         },
         async getList(page_obj = 1) {
+            uni.showLoading({
+                title: '加载中'
+            });
+            
             let page = typeof page_obj == 'object' ? page_obj.page : page_obj
             this.list_page = page
             console.log('page', page)
@@ -207,15 +229,50 @@ export default {
             console.log('params', params)
         	let list = await api.list(this.list_type+'s', params).then((res) => {return res})
             console.log('list', list)
-            this.list = list.data.data;
-            this.list_links = list.data.links;
-            this.list_meta = list.data.meta;
+            if (list.data.data != undefined) {
+                this.list = list.data.data;
+                this.list_links = list.data.links;
+                this.list_meta = list.data.meta;
+                if (this.gps_button_show != undefined) {
+                    this.gpsSaveBackground()
+                    let gps_time_id = this.timer()
+                    console.log('gps_time_id', gps_time_id)
+                    uni.setStorageSync('gps_time_id', gps_time_id)
+                } else {
+                    let gps_time_id = uni.getStorageSync('gps_time_id')
+                    clearInterval(gps_time_id)
+                }
+                
+            }
+            
+            uni.hideLoading()            
         },
-        async initNav() {
-            let navs = await api.get('logisticss/status', {list_from:this.list_from}).then((res) => {
-                return res.data
+        initNav() {
+            api.get('logisticss/status', {list_from:this.list_from}).then((res) => {
+                this.list_navs = res.data
             })
-            this.list_navs = navs
         },
+        
+        gpsSaveBackground() {
+            wx.startLocationUpdateBackground()
+            wx.onLocationChange(function(res) {
+                let gps = res.latitude + ',' + res.longitude
+                let lastest_gps = uni.getStorageSync('lastest_gps')
+                if (lastest_gps != gps && res.latitude != 0) {
+                    uni.setStorageSync('lastest_gps', gps)
+                }
+            })
+        },
+        timer(){
+            return setInterval(function () {
+                let gps = uni.getStorageSync('lastest_gps')
+                console.log('interval', 1)
+                if (gps != false && gps != undefined) {
+                    api.putCustomer('gps', {gps:gps}).then((res1) => {
+                        console.log('gps_post_res', res1)
+                    })
+                }
+            }, 120000)
+        }
     }
 }

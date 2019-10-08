@@ -9,7 +9,7 @@
                         </view>
                     </view>
                     <view class="padding-sm" v-if="modal_show == true">
-                        <map style="width: 100%; height: 800rpx;" show-compass="true" show-scale="true" :latitude="markers[0]['latitude']" :longitude="markers[0]['longitude']" :markers="markers">
+                        <map style="width: 100%; height: 800rpx;" show-compass="true" show-scale="true" :latitude="markers[0]['latitude']" :longitude="markers[0]['longitude']" :markers="markers" :scale="map_scale">
                         </map>
                     </view>
                 </view>
@@ -30,9 +30,12 @@
 		    },
             markers:{
                 
+            },
+            map_scale:{
+                
             }
 		},
-        created() {
+        mounted() {
             console.log(this.modal_show)
             console.log(this.markers)
         },
