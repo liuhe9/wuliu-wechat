@@ -1,6 +1,6 @@
 <template>
 	<view class="page">
-        <view style="text-align: center">
+        <view style="text-align: center; padding: 10rpx; ">
             <image class="my_image" lazy-load="true" v-if="format_images.length > 0" v-for="(item, idx) in format_images" :key="idx" :src="item" mode="widthFix"></image>
         </view>
 		<Bar></Bar>

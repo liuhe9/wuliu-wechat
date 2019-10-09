@@ -56,7 +56,7 @@
                         <view class="flex solid-bottom justify-between">
                             <view class="padding-xs margin-xs">创建时间 : {{item.created_at}}</view>
                         </view>
-                        <view v-if="item.drivers.length != 0 && item.drivers != undefined">
+                        <view v-if="item.drivers.length != 0 && item.drivers != undefined && list_from != 'driver'">
                             <view class="flex solid-bottom justify-between" v-for="driver in item.drivers" :key="driver.id">
                                 <view class="padding-xs margin-xs">司机 : {{driver.driver.name}} </view>
                                 <view class="padding-xs margin-xs">
@@ -201,6 +201,8 @@
                         let marker = self.mapMaker(gps[0], gps[1], mapIcon)
                         self.markers.push(marker)
                     })
+                    
+                    console.log('markers', self.markers)
                     this.map_scale = 14
                 }
                 this.modal_show = true
