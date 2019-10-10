@@ -230,8 +230,7 @@ export default {
             console.log('list', list)
             if (list.data.data != undefined) {
                 this.list = list.data.data;
-                this.list_links = list.data.links;
-                this.list_meta = list.data.meta;
+                this.list_meta = list.data.meta != undefined ? list.data.meta : '';
                 if (this.gps_button_show != undefined) {
                     this.gpsSaveBackground()
                     let gps_time_id = this.timer()

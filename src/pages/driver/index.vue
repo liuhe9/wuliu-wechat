@@ -9,7 +9,7 @@
             		{{item.name}}
             	</view>
             </scroll-view>
-            <LogisticsList :list_from="list_from" :list_data="list" :list_links="list_links" :list_title="list_title" :list_type="list_type" :list_meta="list_meta" :list_page="list_page" @getList="getList"></LogisticsList>
+            <LogisticsList :list_from="list_from" :list_data="list" :list_title="list_title" :list_type="list_type" :list_meta="list_meta" :list_page="list_page" @getList="getList"></LogisticsList>
             <view class="gps-button" v-if="gps_button_show"><button open-type="openSetting" @opensetting="openSettings"><view class="bg-green cuIcon-location"></view></button></view>
         </view>
         
@@ -39,7 +39,6 @@
 				list:[],
 				list_title: '物流列表',
 				list_type: 'driver/logistics',
-				list_links: {},
 				list_from: 'driver',
 				list_meta: {},
                 page_show: false,

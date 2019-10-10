@@ -17,9 +17,11 @@
                         
                         <view class="cu-form-group margin-top bg-gray">
                             <input placeholder="收货人" v-model="form.receiver_name"></input>
+                            <text class='cuIcon-scan text-orange' @tap="scanQrcode" data-id="receiver_name"></text>
                         </view>
                         <view class="cu-form-group bg-gray">
                             <input placeholder="收货人手机" v-model="form.receiver_mobile"></input>
+                            <text class='cuIcon-scan text-orange' @tap="scanQrcode" data-id="receiver_mobile"></text>
                         </view>
                         <view class="cu-form-group bg-gray">
                             <input type="text" placeholder="选择收货地址坐标" @tap="getGps" data-id="to_gps" disabled="true" v-model="form.to_gps"></input>
@@ -27,6 +29,7 @@
                         </view>
                         <view class="cu-form-group bg-gray">
                             <input placeholder="收货地址" v-model="form.to_address"></input>
+                            <text class='cuIcon-scan text-orange' @tap="scanQrcode" data-id="to_address"></text>
                         </view>
                         
                         <view class="cu-form-group">
@@ -35,13 +38,16 @@
                         </view>
                         <view class="cu-form-group">
                             <input placeholder="发货地址" v-model="form.from_address"></input>
+                            <text class='cuIcon-scan text-orange' @tap="scanQrcode" data-id="from_address"></text>
                         </view>
                         
                         <view class="cu-form-group">
                             <input placeholder="货品描述" v-model="form.product_desc"></input>
+                            <text class='cuIcon-scan text-orange' @tap="scanQrcode" data-id="product_desc"></text>
                         </view>
                         <view class="cu-form-group ">
                             <input placeholder="备注" v-model="form.note"></input>
+                            <text class='cuIcon-scan text-orange' @tap="scanQrcode" data-id="note"></text>
                         </view>
                         
                         <view class="cu-bar bg-white">
@@ -212,11 +218,13 @@
                     }
                 })
             },
-            scanQrcode() {
+            scanQrcode(e) {
+                console.log(e)
                 let self = this
+                let from_item = e.currentTarget.dataset.id
                 uni.scanCode({
                     success: function (res) {
-                        self.form.tracking_no = res.result
+                        self.form[from_item] = res.result
                     }
                 })
             }

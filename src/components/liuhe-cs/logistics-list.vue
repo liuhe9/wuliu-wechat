@@ -159,9 +159,6 @@
             list_from:{
             
             },
-            list_links:{
-            
-            },
             list_meta:{
             
             },

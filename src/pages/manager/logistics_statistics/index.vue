@@ -48,7 +48,6 @@
                 ],
                 list_title: '管理员',
                 list_type: 'logistics/statistics',
-                list_links: {},
                 list_from: 'manager',
                 list_meta: {},
 				tab_data:[
