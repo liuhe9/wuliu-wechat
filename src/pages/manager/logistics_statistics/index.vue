@@ -7,7 +7,7 @@
 			</view>
 		</scroll-view>
 		<view class="cu-list menu">
-			<view class="cu-item" v-for="item in list_data">
+			<view class="cu-item" v-for="item in list">
 				<view class="content">
 					<text class="text-grey">{{item.date}}</text>
 				</view>
@@ -16,7 +16,18 @@
 				</view>
 			</view>
 		</view>
-		</view>
+        <view class="bg-white margin-top margin-bottom-xl" v-if="list_meta.total != undefined && list_meta.total != 0">
+            <uniPagination :current="list_meta.current_page" :total="list_meta.total" :pageSize="list_meta.per_page" @change="getList"></uniPagination>
+        </view>
+        
+        <view class="cu-list menu-avatar justify-center" v-if="list.length == 0">
+        	<view class="cu-item">
+        		<view class="content ">
+        			<view class="text-grey">暂无数据</view>
+        		</view>
+        	</view>
+        </view>
+        <view class="bg-white margin-top padding-bottom-xl margin-bottom-xl"> </view>
 		<Binding :user_type="auth_type" :modal_show="modal_show" @modalHide="modalHide" @init="init"></Binding>
 		<Auth :user_type="auth_type" :auth_modal_show="auth_modal_show" @modalHide="modalHide" @init="init"></Auth>
 		<Bar active_bar="1"></Bar>
@@ -27,9 +38,12 @@
     import api from '@/utils/api'
 	import Binding from "@/components/liuhe-cs/binding.vue"
     import Auth from "@/components/liuhe-cs/auth.vue"
+    import uniPagination from "@/components/uni-ui/uni-pagination/uni-pagination.vue"
 	export default {
 	    components:{
-	        Binding,Auth
+	        Binding,
+            Auth,
+            uniPagination
         },
 		data() {
 			return {
@@ -37,15 +51,7 @@
                     page: 1,
                     type: 'day'
                 },
-                // list:[],
-                list:[
-                	{'date' : '09-18', 'total':100},{'date' : '09-17', 'total':150},{'date' : '09-16', 'total':200},
-                	{'date' : '09-15', 'total':100},{'date' : '09-14', 'total':150},{'date' : '09-13', 'total':200},
-                	{'date' : '09-12', 'total':100},{'date' : '09-11', 'total':150},{'date' : '09-10', 'total':200},
-                	{'date' : '09-09', 'total':100},{'date' : '09-08', 'total':150},{'date' : '09-07', 'total':200},
-                	{'date' : '09-06', 'total':100},{'date' : '09-05', 'total':150},{'date' : '09-04', 'total':200},
-                	{'date' : '09-03', 'total':100},{'date' : '09-02', 'total':150},{'date' : '09-01', 'total':200},
-                ],
+                list:[],
                 list_title: '管理员',
                 list_type: 'logistics/statistics',
                 list_from: 'manager',
@@ -73,6 +79,8 @@
             },
 			tabSelect(e) {
 				this.tab_cur = e.currentTarget.dataset.id;
+                this.list_search.type = this.tab_cur
+                this.getList()
 			}
 		}
 	}

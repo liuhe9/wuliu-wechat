@@ -218,8 +218,8 @@ export default {
             uni.showLoading({
                 title: '加载中'
             });
-            
-            let page = typeof page_obj == 'object' ? page_obj.page : page_obj
+            console.log('page_obj', page_obj)
+            let page = typeof page_obj == 'object' ? (page_obj.current ? page_obj.current: page_obj.page) : page_obj
             this.list_page = page
             console.log('page', page)
             this.list_search.page = page
