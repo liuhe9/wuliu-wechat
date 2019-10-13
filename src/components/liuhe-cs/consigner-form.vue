@@ -148,7 +148,7 @@
                         res.tempFilePaths.forEach(function (tmpImg) {
                             console.log(tmpImg)
                             uni.uploadFile({
-                                url: my_global.__BASE_URL__+'/api/file', 
+                                url: my_global.__BASE_URL__+'/api/files', 
                                 filePath: tmpImg,
                                 name: 'file',
                                 formData: {
@@ -186,7 +186,7 @@
             async submitForm()
             {
                 console.log(this.form)
-                let submitRes = await api.post('logisticss', this.form)
+                let submitRes = await api.post('/api/logisticss', this.form)
                 if (submitRes.data.data.id != undefined) {
                     uni.showToast({
                         title: '提交成功！',

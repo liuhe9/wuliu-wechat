@@ -24,7 +24,7 @@ export default {
             this.checkSession(async function(res) {
                 console.log('checksession:res',res)
                 if (res.errMsg == 'login:ok') {
-                    openid = await api.get('wechat/user/session', {code:res.code}).then((res1) => {
+                    openid = await api.get('/api/wechat/user/session', {code:res.code}).then((res1) => {
                         console.log('res1',res1)
                         return res1.data.openid
                     })
@@ -60,8 +60,8 @@ export default {
             let auth_type = type || this.auth_type
             console.log('auth_type',auth_type)
             
-            let res = await api.get('wechat/check', {openid:uni.getStorageSync('openid'), auth_type: auth_type})
-            if (res.data.exists == false) {
+            let res = await api.get('/api/wechat/check', {openid:uni.getStorageSync('openid'), auth_type: auth_type})
+            if (res.data.status == false) {
                 uni.setStorageSync(this.my_global.token_key, false)
                 return false
             } else {
@@ -95,7 +95,7 @@ export default {
                     res.tempFilePaths.forEach(function (tmpImg) {
                         console.log(tmpImg)
                         uni.uploadFile({
-                            url: my_global.__BASE_URL__+'/api/file', 
+                            url: my_global.__BASE_URL__+'/api/files', 
                             filePath: tmpImg,
                             name: 'file',
                             formData: {
@@ -113,13 +113,25 @@ export default {
         },
         fixImages(old_images) {
             let images = []
+            old_images = old_images == null ? [] : old_images
             if (old_images.length != 0) {
                 old_images.forEach(function (value) {
-                    images.push(my_global.storage_fix + value);
+                    if (value.search("https://") == -1 || value.search("http://") == -1) {
+                        images.push(my_global.storage_fix + value);
+                    } else {
+                        images.push(value)
+                    }
                 })
             }
             console.log('images',images)
             return images
+        },
+        fixImage(old_image) {
+            let image = old_image
+            if (old_image.search("https://") == -1 || old_image.search("http://") == -1) {
+                image = my_global.storage_fix + old_image
+            }
+            return image
         },
         setClipboardData(data){
             let self = this
@@ -204,7 +216,7 @@ export default {
         },
         async unbinding(id) {
             console.log(id)
-            let res = await api.post('wechat/unbinding', {id:id.id, user_type:id.user_type}).then((res1) => {
+            let res = await api.post('/api/wechat/unbinding', {id:id.id, user_type:id.user_type}).then((res1) => {
                 console.log('res1',res1)
                 return res1.data
             })
@@ -226,7 +238,7 @@ export default {
             if (this.tab_cur != undefined) {
                 this.list_search.status = this.tab_cur
             }
-        	let list = await api.list(this.list_type+'s', this.list_search).then((res) => {return res})
+        	let list = await api.get('/api/'+this.list_type+'s', this.list_search).then((res) => {return res})
             console.log('list', list)
             if (list.data.data != undefined) {
                 this.list = list.data.data;
@@ -246,7 +258,7 @@ export default {
             uni.hideLoading()            
         },
         initNav() {
-            api.get('logisticss/status', {list_from:this.list_from}).then((res) => {
+            api.get('/api/logisticss/status', {list_from:this.list_from}).then((res) => {
                 this.list_navs = res.data
             })
         },
@@ -266,7 +278,7 @@ export default {
                 let gps = uni.getStorageSync('lastest_gps')
                 console.log('interval', 1)
                 if (gps != false && gps != undefined) {
-                    api.putCustomer('gps', {gps:gps}).then((res1) => {
+                    api.put('/api/gps', {gps:gps}).then((res1) => {
                         console.log('gps_post_res', res1)
                     })
                 }

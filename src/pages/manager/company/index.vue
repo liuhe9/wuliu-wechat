@@ -81,7 +81,7 @@
                 uni.showLoading({
                     title: '加载中'
                 });
-                api.get('companies').then((res) => {
+                api.get('/api/companies').then((res) => {
                     console.log(res)
                     this.form.images = res.data.images == null ? [] : JSON.parse(res.data.images)
                     this.form.id     = res.data.id
@@ -109,7 +109,7 @@
             },
             async submitForm()
             {
-                let submitRes = await api.put('companies', this.form.id, this.form)
+                let submitRes = await api.put('/api/companies', this.form.id, this.form)
                 if (submitRes.data.id != undefined) {
                     uni.showToast({
                         title: '提交成功！',

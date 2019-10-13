@@ -73,24 +73,53 @@
                         </view>
                         <view class="flex solid-bottom text-white justify-between">
                             <view class="padding-xs margin-xs">
-                                <button v-if="item.images" class="cu-btn block bg-gray" @tap="viewImage(item.images)">
+                                <button v-if="item.images.length!=0" class="cu-btn block bg-gray" @tap="viewImage(item.images)">
                                     <text class="cuIcon-picfill"></text> 发货图片
                                 </button>
                             </view>
                             <view class="padding-xs margin-xs">
-                                <button v-if="item.finish_images" class="cu-btn block bg-gray" @tap="viewImage(item.finish_images)">
+                                <button v-if="item.finish_images.length!=0" class="cu-btn block bg-gray" @tap="viewImage(item.finish_images)">
                                     <text class="cuIcon-picfill"></text> 收货图片
                                 </button>
+                            </view>
+                        </view>
+                        
+                        <view class="cu-form-group" v-if="list_from != 'consigner'">
+                            <view>上传发货图片</view>
+                            <view class="grid col-4 grid-square flex-sub">
+                                <view class="bg-img" v-for="(item2,index2) in c_upload_images" :key="index2" :data-url="item2">
+                                <image :src="item2" mode="widthFix"></image>
+                                    <view class="cu-tag bg-red" @tap.stop="delImg(index2, item.id, 'upload_images', 'images')">
+                                        <text class='cuIcon-close'></text>
+                                    </view>
+                                </view>
+                                <view class="solids" @tap="chooseImage(idx, 'upload_images', 'images')">
+                                    <text class='cuIcon-cameraadd'></text> 
+                                </view>
+                            </view>
+                        </view>
+                        <view class="cu-form-group" v-if="list_from != 'consigner'">
+                            <view>上传收货图片</view>
+                            <view class="grid col-4 grid-square flex-sub">
+                                <view class="bg-img" v-for="(item3,index3) in c_upload_finish_images" :key="index3" :data-url="item3">
+                                <image :src="item3" mode="widthFix"></image>
+                                    <view class="cu-tag bg-red" @tap.stop="delImg(index3, item.id, 'upload_finish_images', 'finish_images')">
+                                        <text class='cuIcon-close'></text>
+                                    </view>
+                                </view>
+                                <view class="solids" @tap="chooseImage(idx, 'upload_finish_images', 'finish_images')">
+                                    <text class='cuIcon-cameraadd'></text> 
+                                </view>
                             </view>
                         </view>
                         <view class="flex solid-bottom justify-between">
                             <view class="padding-xs margin-xs">
                                 <button class="cu-btn block bg-green" v-if="list_from == 'manager'" @tap="driversList(idx)">
-                                    <text class="cuIcon-deliver"></text> 分配司机
+                                    <text class="cuIcon-deliver"></text> 司机
                                 </button>
                             </view>
                             <view class="padding-xs margin-xs">
-                                <button class="cu-btn block bg-green" v-if="list_from != 'consigner' && item.next_status != null" @tap="changeStatus(item.next_status.code)">
+                                <button class="cu-btn block bg-green" v-if="show_status(item.next_status, list_from)" @tap="changeStatus(item.id, item.next_status.name, item.next_status.code)">
                                     <text class="cuIcon-check"></text> {{item.next_status.name}}
                                 </button>
                             </view>
@@ -141,6 +170,8 @@
                 drivers:[],
                 selected_list: [],
                 select_title: '选择司机',
+                upload_images:[],
+                upload_finish_images:[],
                 cur_idx: 0
 			};
 		},
@@ -168,6 +199,14 @@
             },
             
 		},
+        computed:{
+            c_upload_images() {
+                return this.fixImages(this.upload_images)
+            },
+            c_upload_finish_images() {
+                return this.fixImages(this.upload_finish_images)
+            },
+        },
         mounted() {
             this.initNav()
         },
@@ -224,16 +263,92 @@
                 this.$emit('getList', {page:page})
                 this.modal_show = false
             },
+            
+            chooseImage(idx, obj, target) {
+                this.cur_idx = idx
+                this[obj] = this.list_data[idx][target] == null ? [] : JSON.parse(this.list_data[idx][target])
+                let self = this
+            	uni.chooseImage({
+            		count: 9, //默认9
+            		sizeType: ['compressed'], //可以指定是原图还是压缩图，默认二者都有
+            		sourceType: ['album'], //从相册选择
+            		success: (res) => {
+                        let files_count = res.tempFilePaths.length
+                        console.log('files_count',files_count)
+                        res.tempFilePaths.forEach(function (tmpImg) {
+                            console.log(tmpImg)
+                            uni.uploadFile({
+                                url: my_global.__BASE_URL__+'/api/files', 
+                                filePath: tmpImg,
+                                name: 'file',
+                                formData: {
+                                    'floder': 'logistics'
+                                },
+                                success: (uploadFileRes) => {
+                                    files_count--
+                                    self[obj].push(uploadFileRes.data)
+                                    console.log(self[obj])
+                                    if (files_count == 0) {
+                                        self.saveLogisticsImages(self.list_data[idx]['id'], obj, target)
+                                    }
+                                }
+                            })
+                        })
+            		}
+            	});
+            },
+            
+            saveLogisticsImages(id, obj, target){
+                let self = this
+                api.put('/api/'+self.list_from+'/logistics/'+id+'/images', {images:self[obj], image_type:target}).then((res) => {
+                    uni.showToast({
+                        icon:'none',
+                        title: '保存成功！',
+                        duration: 3000
+                    });
+                    self.getList()
+                })
+            },
+            
+            delImg(index, id, obj, target) {
+                let self = this
+            	uni.showModal({
+            		title: '删除图片',
+            		content: '确定要删除图片吗？',
+            		cancelText: '取消',
+            		confirmText: '删除',
+            		success: res => {
+            			if (res.confirm) {
+            				self[obj].splice(index, 1)
+                            self.saveLogisticsImages(id, obj, target)
+            			}
+            		}
+            	})
+            },
 
             fixImages(old_images) {
                 let images = []
+                old_images = old_images == null ? [] : old_images
                 if (old_images.length != 0) {
                     old_images.forEach(function (value) {
-                        images.push(my_global.storage_fix + value);
+                        console.log(value)
+                        if (value.search("https://") == -1 || value.search("http://") == -1) {
+                            images.push(my_global.storage_fix + value);
+                        } else {
+                            images.push(value)
+                        }
                     })
                 }
                 console.log('images',images)
                 return images
+            },
+            
+            fixImage(old_image) {
+                let image = old_image
+                if (old_image.search("https://") == -1 || old_image.search("http://") == -1) {
+                    image = my_global.storage_fix + old_image
+                }
+                return image
             },
 
             viewImage(images) {
@@ -250,7 +365,7 @@
                 this.selected_list = this.formatSelectedList(this.list_data[idx]['drivers'])
                 console.log('idx', idx)
                 console.log('item', this.list_data[idx])
-                let drivers = await api.get('drivers', {per_page:1000}).then((res) => {
+                let drivers = await api.get('/api/drivers', {per_page:1000}).then((res) => {
                     return res.data.data
                 })
                 this.drivers = this.formatList(drivers)
@@ -285,7 +400,7 @@
                 console.log(params)
                 this.selected_list = params.selected_list
                 if (this.selected_list.length > 0) {
-                    let l_res = await api.putCustomer('logisticss/'+this.list_data[this.cur_idx]['id']+'/drivers', {drivers:this.selected_list}).then((res) =>{
+                    let l_res = await api.put('/api/logisticss/'+this.list_data[this.cur_idx]['id']+'/drivers', {drivers:this.selected_list}).then((res) =>{
                         return res
                     })
                     this.getList()
@@ -293,8 +408,34 @@
                 }
                 this.select_modal = false
             },
-            changeStatus(status) {
-
+            changeStatus(id, name, status) {
+                let self=this
+                uni.showModal({
+                  title: '更改物流状态',
+                  content: '确定要更改至【'+name+'】吗？',
+                  success (res) {
+                    if (res.confirm) {
+                      api.put('/api/'+self.list_from+'/logistics/'+id+'/status', {status:status}).then((res) => {
+                          if (res.data.status == true) {
+                              self.getList()
+                          }
+                      })
+                    } else if (res.cancel) {
+                      console.log('用户点击取消')
+                    }
+                  }
+                })
+            },
+            show_status(next_status, list_from) {
+                if (list_from != 'consigner' && next_status != false) {
+                    if (next_status.code == 10 && list_from == 'driver') {
+                        return false
+                    } else {
+                        return true
+                    }
+                } else {
+                    return false
+                }
             }
         }
 	}

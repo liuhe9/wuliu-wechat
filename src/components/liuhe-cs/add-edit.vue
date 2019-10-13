@@ -67,9 +67,9 @@
             },
             async submitForm() {
                 if (this.form.id != false && this.form.id != undefined) {
-                    let res = await api.put(this.resources, this.form.id, this.form)
+                    let res = await api.put('/api/'+this.resources+'/'+this.form.id, this.form)
                 } else {
-                    let res = await api.post(this.resources, this.form)
+                    let res = await api.post('/api/'+this.resources, this.form)
                 }
                 
                 this.$emit('getList')

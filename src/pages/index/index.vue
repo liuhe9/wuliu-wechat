@@ -38,7 +38,7 @@
                 uni.showLoading({
                     title: '加载中'
                 });
-                api.get('companies').then((res) => {
+                api.get('/api/companies').then((res) => {
                     console.log(res)
                     this.images = res.data.images == null ? [] : JSON.parse(res.data.images)
                 });

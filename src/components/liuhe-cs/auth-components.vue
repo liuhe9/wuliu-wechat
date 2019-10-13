@@ -50,7 +50,7 @@
                 if (e.detail.errMsg == 'getUserInfo:ok') {
                     let request_data = {openid:uni.getStorageSync('openid'), user_type:this.user_type, encrypted_data:e.detail}
                     console.log('user_info_request_data', request_data);
-                    let res = await api.post('login', request_data).then((res1) => {
+                    let res = await api.post('/api/login', request_data).then((res1) => {
                         console.log('res1',res1)
                         return res1.data
                     })

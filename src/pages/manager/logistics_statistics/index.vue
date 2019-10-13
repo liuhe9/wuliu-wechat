@@ -27,7 +27,7 @@
         		</view>
         	</view>
         </view>
-        <view class="bg-white margin-top padding-bottom-xl margin-bottom-xl"> </view>
+        <view class="margin-top padding-bottom-xl margin-bottom-xl"> </view>
 		<Binding :user_type="auth_type" :modal_show="modal_show" @modalHide="modalHide" @init="init"></Binding>
 		<Auth :user_type="auth_type" :auth_modal_show="auth_modal_show" @modalHide="modalHide" @init="init"></Auth>
 		<Bar active_bar="1"></Bar>

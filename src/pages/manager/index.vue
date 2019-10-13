@@ -76,8 +76,9 @@
                 if (auth_res == false) {
                     this.modal_show = 'show'
                 } else {
-                    let me = await api.get('managers/me').then((res) => {
+                    let me = await api.get('/api/managers/me').then((res) => {
                         return res.data
+                        
                     })
                 }
             }
