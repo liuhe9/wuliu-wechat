@@ -56,21 +56,7 @@
                         <view class="flex solid-bottom justify-between">
                             <view class="padding-xs margin-xs">创建时间 : {{item.created_at}}</view>
                         </view>
-                        <view v-if="item.drivers.length != 0 && item.drivers != undefined && list_from != 'driver'">
-                            <view class="flex solid-bottom justify-between" v-for="driver in item.drivers" :key="driver.id">
-                                <view class="padding-xs margin-xs">司机 : {{driver.driver.name}} </view>
-                                <view class="padding-xs margin-xs">
-                                    <view class="cu-capsule radius" @tap="makePhoneCall(driver.driver.mobile)">
-                                        <view class="cu-tag bg-grey">
-                                            <text class="cuIcon-mobile"></text>
-                                        </view>
-                                        <view class="cu-tag">
-                                            {{driver.driver.mobile}}
-                                        </view>
-                                    </view>
-                                </view>
-                            </view>
-                        </view>
+                        
                         <view class="flex solid-bottom text-white justify-between">
                             <view class="padding-xs margin-xs">
                                 <button v-if="item.images.length!=0" class="cu-btn block bg-gray" @tap="viewImage(item.images)">
@@ -109,6 +95,22 @@
                                 </view>
                                 <view class="solids" @tap="chooseImage(idx, 'upload_finish_images', 'finish_images')">
                                     <text class='cuIcon-cameraadd'></text> 
+                                </view>
+                            </view>
+                        </view>
+                        
+                        <view v-if="item.drivers.length != 0 && item.drivers != undefined && list_from != 'driver'">
+                            <view class="flex solid-bottom justify-between" v-for="driver in item.drivers" :key="driver.id">
+                                <view class="padding-xs margin-xs">司机 : {{driver.driver.name}} </view>
+                                <view class="padding-xs margin-xs">
+                                    <view class="cu-capsule radius" @tap="makePhoneCall(driver.driver.mobile)">
+                                        <view class="cu-tag bg-grey">
+                                            <text class="cuIcon-mobile"></text>
+                                        </view>
+                                        <view class="cu-tag">
+                                            {{driver.driver.mobile}}
+                                        </view>
+                                    </view>
                                 </view>
                             </view>
                         </view>
@@ -260,8 +262,13 @@
             },
             async getList(e = 1) {
                 let page = typeof e == 'object' ? e.current : e
-                this.$emit('getList', {page:page})
+                let params = {page:page}
+                if(e.tab_cur != undefined) {
+                    params.tab_cur = e.tab_cur
+                }
+                this.$emit('getList', params)
                 this.modal_show = false
+                this.selected_list = []
             },
             
             chooseImage(idx, obj, target) {
@@ -306,7 +313,6 @@
                         title: '保存成功！',
                         duration: 3000
                     });
-                    self.getList()
                 })
             },
             
@@ -417,7 +423,7 @@
                     if (res.confirm) {
                       api.put('/api/'+self.list_from+'/logistics/'+id+'/status', {status:status}).then((res) => {
                           if (res.data.status == true) {
-                              self.getList()
+                              self.getList({tab_cur:status})
                           }
                       })
                     } else if (res.cancel) {

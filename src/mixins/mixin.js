@@ -2,7 +2,8 @@ import api from '@/utils/api'
 import my_global from '@/utils/my_global'
 
 export default {
-    onLoad() {
+    onLoad(options) {
+        getApp().globalData.options = options
         let self = this
         console.log('onload')
         uni.$on('modalShow',function(data){
@@ -33,6 +34,10 @@ export default {
                     openid = uni.getStorageSync('openid')
                 }
                 console.log('g_openid',openid)
+                
+                if (getApp().globalData.options.tab_cur != undefined && self.tab_cur != undefined) {
+                    self.tab_cur = getApp().globalData.options.tab_cur
+                }
                 self.init()
             })
         },
@@ -236,6 +241,9 @@ export default {
             console.log('page', page)
             this.list_search.page = page
             if (this.tab_cur != undefined) {
+                if (page_obj.tab_cur != undefined) {
+                    this.tab_cur = page_obj.tab_cur
+                }
                 this.list_search.status = this.tab_cur
             }
         	let list = await api.get('/api/'+this.list_type+'s', this.list_search).then((res) => {return res})
